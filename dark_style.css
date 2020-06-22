@@ -1,9 +1,6 @@
-canvas {
-    background: #ffffff;
-}
-
 body {
-    background-color: white;
+    background-color: #292929;
+    color: white;
     margin: 0px;
     font-family: monospace;
 }
@@ -17,8 +14,8 @@ code {
     padding-bottom: 2px;
     padding-right: 4px;
     padding-left: 4px;
-    background-color: whitesmoke;
-    color: crimson;
+    background-color: black;
+    color: lightseagreen;
     border-radius: 4px;
     font-weight: bold;
 }
