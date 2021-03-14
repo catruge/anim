@@ -4024,54 +4024,64 @@ window.onload = () => {
             return;
         }
 
-        if (rtv.tool === "select") {
-            let captured = false;
-            let N = rtv.objs.length;
-            for (let i = N-1; i >= 0; i--) {
-                let obj = rtv.objs[i];
-                if (!captured && typeof obj.mouse_up === 'function') {
-                    captured = obj.mouse_up(evt);
+        switch (rtv.tool) {
+            case 'select': {
+                let captured = false;
+                let N = rtv.objs.length;
+                for (let i = N-1; i >= 0; i--) {
+                    let obj = rtv.objs[i];
+                    if (!captured && typeof obj.mouse_up === 'function') {
+                        captured = obj.mouse_up(evt);
+                    }
                 }
-            }
-        } else if (rtv.tool === "text") {
-            // add a num obj at mouse pos
-            let n = new Text("", rtv.mouse.grid);
+            } break;
+            case 'text': {
+                // add a num obj at mouse pos
+                let n = new Text("", rtv.mouse.grid);
 
-            let N = rtv.objs.length;
-            for (let i = 0; i < N; i++) {
-                let obj = rtv.objs[i];
-                if (typeof obj.is_selected === "function") {
-                    obj.selected = false;
-                }
-            }
-
-            n.select();
-            rtv.objs.push(n);
-        } else if (rtv.tool === "shape" || rtv.tool === "vector") {
-            // add a num obj at mouse pos
-            if (rtv.new_line) {
-                // add a point
-                rtv.new_line.add_point({x: rtv.mouse.grid.x, y: rtv.mouse.grid.y});
-            } else {
-                let l = new Shape([0, 0, 0, 1], [{x: rtv.mouse.grid.x, y: rtv.mouse.grid.y}]);
-
-                if (rtv.tool === "vector") {
-                    l.properties[rtv.frame].v = true;
-                } else if (rtv.tool === "circle") {
-                    l.properties[rtv.frame].circle = true;
+                let N = rtv.objs.length;
+                for (let i = 0; i < N; i++) {
+                    let obj = rtv.objs[i];
+                    if (typeof obj.is_selected === "function") {
+                        obj.selected = false;
+                    }
                 }
 
-                rtv.objs.push(l);
-                rtv.new_line = l
-            }
+                n.select();
+                rtv.objs.push(n);
+            } break;
+            case 'shape':
+            case 'vector': {
+                // add a num obj at mouse pos
+                if (rtv.new_line) {
+                    // add a point
+                    rtv.new_line.add_point({x: rtv.mouse.grid.x, y: rtv.mouse.grid.y});
+                } else {
+                    let l = new Shape([0, 0, 0, 1], [{x: rtv.mouse.grid.x, y: rtv.mouse.grid.y}]);
 
-            return;
-        } else if (rtv.tool === "circle") {
-            let new_circle = new Circle([0, 0, 0, 1], rtv.mouse.grid);
-            rtv.objs.push(new_circle);
-        } else if (rtv.tool === "network") {
-            let n = new Network(rtv.mouse.grid);
-            rtv.objs.push(n);
+                    switch (rtv.tool) {
+                        case 'vector':
+                            l.properties[rtv.frame].v = true;
+                            break;
+                        case 'circle':
+                            l.properties[rtv.frame].circle = true;
+                            break;
+                    }
+
+                    rtv.objs.push(l);
+                    rtv.new_line = l
+                }
+
+                return;
+            } break; // 'break' just in case 'return' is removed
+            case 'circle': {
+                let new_circle = new Circle([0, 0, 0, 1], rtv.mouse.grid);
+                rtv.objs.push(new_circle);
+            } break;
+            case 'network': {
+                let n = new Network(rtv.mouse.grid);
+                rtv.objs.push(n);
+            } break;
         }
 
         if (rtv.selecting) {
