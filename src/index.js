@@ -3349,15 +3349,16 @@ function text_array_to_objs(arr, keep_animation) {
     let new_objs = [];
     for (let i = 0; i < arr.length; i++) {
         let o = arr[i];
-        let new_obj = null;
+        const new_obj = new {
+            'Shape': Shape,
+            'Circle': Circle,
+            'Text': Text,
+        }[new_obj];
 
-        if (o.type === "Shape") {
-            new_obj = new Shape();
-        } else if (o.type === "Circle") {
-            new_obj = new Circle();
-        } else if (o.type === "Text") {
-            new_obj = new Text();
-        }
+        if (new_obj === undefined) {
+            console.error(`Invalid object type: ${key}`);
+            continue;
+        };
 
         if (keep_animation) {
             new_obj.properties = o.properties;
