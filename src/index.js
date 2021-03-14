@@ -2526,52 +2526,56 @@ function draw_r(o, p, d) {
             text = o.op;
         }
 
-        if (text === "+" || text === "-" || text === "*") {
-            if (argc === 1) {
-                if (d) rtv.ctx.fillText(text, p.x, p.y);
-                let s1 = draw_r(args[0], {x: p.x + CHAR.SIZE, y: p.y}, d);
+        switch (text) {
+            case '+':
+            case '-':
+            case '*': switch (argc) {
+                case 1: {
+                    if (d) rtv.ctx.fillText(text, p.x, p.y);
+                    let s1 = draw_r(args[0], {x: p.x + CHAR.SIZE, y: p.y}, d);
 
-                size.w = s1.w + CHAR.SIZE;
-                size.h = s1.h;
-            } else if (argc === 2) {
-                // draw on the left and the right
+                    size.w = s1.w + CHAR.SIZE;
+                    size.h = s1.h;
+                } break;
+                case 2: {
+                    // draw on the left and the right
 
-                let center = false; // false -> bottom align
-                let pad2 = CHAR.PAD * 2;
-                if (text === "*") {
-                    pad2 = 0;
-                }
-
-                let s1 = draw_r(args[0], {x: 0, y: 0}, false);
-                let s2 = draw_r(args[1], {x: 0, y: 0}, false);
-
-                size.w = s1.w + text.length * CHAR.SIZE + 2*pad2 + s2.w;
-                size.h = Math.max(s1.h, s2.h);
-
-                if (d) {
-                    let opp = {x: 0, y: 0};
-                    if (center) {
-                        s1 = draw_r(args[0], {x: p.x, y: p.y + size.h/2 - s1.h/2}, d);
-                        opp = {x: p.x + s1.w + pad2, y: p.y + size.h/2 - CHAR.SIZE};
-                        s2 = draw_r(args[1], {x: p.x + s1.w + pad2 + text.length*CHAR.SIZE + pad2, y: p.y + size.h/2 - s2.h/2}, d);
-                    } else {
-                        // bottom align
-                        s1 = draw_r(args[0], {x: p.x, y: p.y + size.h - s1.h}, d);
-                        opp = {x: p.x + s1.w + pad2, y: p.y + size.h - CHAR.SIZE*2};
-                        s2 = draw_r(args[1], {x: p.x + s1.w + pad2 + text.length*CHAR.SIZE + pad2, y: p.y + size.h - s2.h}, d);
-                    }
-
+                    let center = false; // false -> bottom align
+                    let pad2 = CHAR.PAD * 2;
                     if (text === "*") {
-                        rtv.ctx.beginPath();
-                        rtv.ctx.arc(opp.x + CHAR.SIZE/2, opp.y+CHAR.SIZE, 3, 0, PI2);
-                        rtv.ctx.fill();
-                    } else {
-                        rtv.ctx.fillText(text, opp.x, opp.y);
+                        pad2 = 0;
                     }
-                }
-            }
-        } else if (text === "^") {
-            if (argc === 2) {
+
+                    let s1 = draw_r(args[0], {x: 0, y: 0}, false);
+                    let s2 = draw_r(args[1], {x: 0, y: 0}, false);
+
+                    size.w = s1.w + text.length * CHAR.SIZE + 2*pad2 + s2.w;
+                    size.h = Math.max(s1.h, s2.h);
+
+                    if (d) {
+                        let opp = {x: 0, y: 0};
+                        if (center) {
+                            s1 = draw_r(args[0], {x: p.x, y: p.y + size.h/2 - s1.h/2}, d);
+                            opp = {x: p.x + s1.w + pad2, y: p.y + size.h/2 - CHAR.SIZE};
+                            s2 = draw_r(args[1], {x: p.x + s1.w + pad2 + text.length*CHAR.SIZE + pad2, y: p.y + size.h/2 - s2.h/2}, d);
+                        } else {
+                            // bottom align
+                            s1 = draw_r(args[0], {x: p.x, y: p.y + size.h - s1.h}, d);
+                            opp = {x: p.x + s1.w + pad2, y: p.y + size.h - CHAR.SIZE*2};
+                            s2 = draw_r(args[1], {x: p.x + s1.w + pad2 + text.length*CHAR.SIZE + pad2, y: p.y + size.h - s2.h}, d);
+                        }
+
+                        if (text === "*") {
+                            rtv.ctx.beginPath();
+                            rtv.ctx.arc(opp.x + CHAR.SIZE/2, opp.y+CHAR.SIZE, 3, 0, PI2);
+                            rtv.ctx.fill();
+                        } else {
+                            rtv.ctx.fillText(text, opp.x, opp.y);
+                        }
+                    }
+                } break;
+            } break;
+            case '^': if (argc === 2) {
                 // draw on the left and the right, shifted up!
                 let a = args[0];
                 let b = args[1];
@@ -2590,9 +2594,8 @@ function draw_r(o, p, d) {
                     draw_r(a, {x: p.x, y: p.y + size.h - s1.h}, d);
                     draw_r(b, {x: p.x + s1.w, y: p.y}, d);
                 }
-            }
-        } else if (text === "/") {
-            if (argc === 2) {
+            } break;
+            case '/': if (argc === 2) {
                 // draw on top and bottom
                 let a = args[0]; let b = args[1];
 
@@ -2621,57 +2624,58 @@ function draw_r(o, p, d) {
                     rtv.ctx.lineTo(p.x + size.w, p.y + size.h/2);
                     rtv.ctx.stroke();
                 }
-            }
-        } else if (text === "!") {
-            let s1 = draw_r(args[0], {x: p.x, y: p.y}, d);
-            if (d) rtv.ctx.fillText(text, p.x + s1.w, p.y);
+            } break;
+            case '!': {
+                let s1 = draw_r(args[0], {x: p.x, y: p.y}, d);
+                if (d) rtv.ctx.fillText(text, p.x + s1.w, p.y);
 
-            size.w = s1.w + CHAR.SIZE;
-            size.h = s1.h;
-        } else if (o.fn) {
-            // function call
-            let h = 0;
+                size.w = s1.w + CHAR.SIZE;
+                size.h = s1.h;
+            } break;
+            default: if (o.fn) {
+                // function call
+                let h = 0;
 
-            // get height of all args
-            let N = args.length;
-            let hs = [];
-            for (let i = 0; i < N; i ++) {
-                let s1 = draw_r(args[i], {x: 0, y: 0}, false);
-                hs.push(s1);
+                // get height of all args
+                let N = args.length;
+                let hs = [];
+                for (let i = 0; i < N; i ++) {
+                    let s1 = draw_r(args[i], {x: 0, y: 0}, false);
+                    hs.push(s1);
 
-                h = Math.max(h, s1.h);
-            }
-
-            size.h = h;
-
-            // draw it
-            text = o.name + "(";
-            let cally = p.y + size.h/2 - CHAR.SIZE;
-
-            if (d) {
-                for (let i = 0; i < text.length; i ++) {
-                    rtv.ctx.fillText(text[i], p.x+i*CHAR.SIZE, cally);
-                }
-            }
-
-            let xo = text.length * CHAR.SIZE;
-
-            for (let i = 0; i < N; i ++) {
-                let s1 = draw_r(args[i], {x: p.x + xo, y: p.y + size.h/2 - hs[i].h/2}, d);
-                xo += s1.w;
-
-                if (i === N-1) {
-                    if (d) rtv.ctx.fillText(")", p.x + xo, cally);
-                } else {
-                    if (d) rtv.ctx.fillText(",", p.x + xo, cally);
+                    h = Math.max(h, s1.h);
                 }
 
-                xo += CHAR.SIZE;
-            }
+                size.h = h;
 
-            size.w = xo;
+                // draw it
+                text = o.name + "(";
+                let cally = p.y + size.h/2 - CHAR.SIZE;
+
+                if (d) {
+                    for (let i = 0; i < text.length; i ++) {
+                        rtv.ctx.fillText(text[i], p.x+i*CHAR.SIZE, cally);
+                    }
+                }
+
+                let xo = text.length * CHAR.SIZE;
+
+                for (let i = 0; i < N; i ++) {
+                    let s1 = draw_r(args[i], {x: p.x + xo, y: p.y + size.h/2 - hs[i].h/2}, d);
+                    xo += s1.w;
+
+                    if (i === N-1) {
+                        if (d) rtv.ctx.fillText(")", p.x + xo, cally);
+                    } else {
+                        if (d) rtv.ctx.fillText(",", p.x + xo, cally);
+                    }
+
+                    xo += CHAR.SIZE;
+                }
+
+                size.w = xo;
+            } break;
         }
-
     } else {
         // no args
 
