@@ -3136,19 +3136,25 @@ export function hexToRgb(hex) {
 }
 
 export function transform_props(key, props, step=.2) {
-
-    if (key === "l") {
-        props.w += step;
-    } else if (key === "j") {
-        props.w -= step;
-    } else if (key === "i") {
-        props.h += step;
-    } else if (key === "k") {
-        props.h -= step;
-    } else if (key === "u") {
-        props.r -= Math.PI/12;
-    } else if (key === "o") {
-        props.r += Math.PI/12;
+    switch (key) {
+        case 'l':
+            props.w += step;
+            break;
+        case 'j':
+            props.w -= step;
+            break;
+        case 'i':
+            props.h += step;
+            break;
+        case 'k':
+            props.h -= step;
+            break;
+        case 'u':
+            props.r -= Math.PI/12;
+            break;
+        case 'o':
+            props.r += Math.PI/12;
+            break;
     }
 
     return props;
