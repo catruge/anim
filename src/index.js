@@ -1182,94 +1182,97 @@ math.import({
     elefield(charges, location) { // charges = [q1, x1, y1, z1, q2, x2, y2, z2, etc.], provide location for field there
         charges = charges._data;
 
-        if (arguments.length === 1) {
-            const n = 5;
-            let d = 20 / n;
-            let p = [0, 0];
-            let pl = 5; // path length
+        switch (arguments.length) {
+            case 1: {
+                const n = 5;
+                let d = 20 / n;
+                let p = [0, 0];
+                let pl = 5; // path length
 
-            //let move = ((millis % 1000) /1000 * .5 + .5);
-            //console.log(move);
+                //let move = ((millis % 1000) /1000 * .5 + .5);
+                //console.log(move);
 
-            for (let x = -10; x <= 10; x+=d) {
-                for (let y = -10; y <= 10; y+=d) {
-                    for (let z = -10; z <= 10; z+=d) {
+                for (let x = -10; x <= 10; x+=d) {
+                    for (let y = -10; y <= 10; y+=d) {
+                        for (let z = -10; z <= 10; z+=d) {
 
-                        var xp = x;
-                        var yp = y
-                        var zp = z;
+                            var xp = x;
+                            var yp = y
+                            var zp = z;
 
-                        for (let j = 0; j <= pl; j++) {
+                            for (let j = 0; j <= pl; j++) {
 
-                            rtv.ctx.beginPath();
-                            p = rtv.cam.graph_to_screen(xp, yp, zp);
-                            rtv.ctx.moveTo(p[0], p[1]);
-                            let dead = false;
-
-                            // add up forces from charges
-                            for (let i = 0; i < charges.length; i+= 4) {
-                                let q = charges[i];
-                                let cx = charges[i+1];
-                                let cy = charges[i+2];
-                                let cz = charges[i+3];
-
-                                let v = [xp-cx, yp-cy, zp-cz];
-                                let len = math.norm(v);
-                                let l2 = len*len;
-
-                                let c = math.coulomb.value*q/len/l2;
-
-                                if (len > 2) {
-                                    xp += c*v[0];
-                                    yp += c*v[1];
-                                    zp += c*v[2];
-                                } else {
-                                    j = pl;
-                                    dead = true;
-                                }
-                            }
-
-                            if (dead === false) {
+                                rtv.ctx.beginPath();
                                 p = rtv.cam.graph_to_screen(xp, yp, zp);
-                                rtv.ctx.strokeStyle = rgbToHex([math.round((pl-j)/pl * 255), 0, math.round(j/pl * 255)]);
-                                rtv.ctx.lineTo(p[0], p[1]);
-                                rtv.ctx.stroke();
+                                rtv.ctx.moveTo(p[0], p[1]);
+                                let dead = false;
+
+                                // add up forces from charges
+                                for (let i = 0; i < charges.length; i+= 4) {
+                                    let q = charges[i];
+                                    let cx = charges[i+1];
+                                    let cy = charges[i+2];
+                                    let cz = charges[i+3];
+
+                                    let v = [xp-cx, yp-cy, zp-cz];
+                                    let len = math.norm(v);
+                                    let l2 = len*len;
+
+                                    let c = math.coulomb.value*q/len/l2;
+
+                                    if (len > 2) {
+                                        xp += c*v[0];
+                                        yp += c*v[1];
+                                        zp += c*v[2];
+                                    } else {
+                                        j = pl;
+                                        dead = true;
+                                    }
+                                }
+
+                                if (dead === false) {
+                                    p = rtv.cam.graph_to_screen(xp, yp, zp);
+                                    rtv.ctx.strokeStyle = rgbToHex([math.round((pl-j)/pl * 255), 0, math.round(j/pl * 255)]);
+                                    rtv.ctx.lineTo(p[0], p[1]);
+                                    rtv.ctx.stroke();
+                                }
                             }
                         }
                     }
                 }
-            }
-        } else if (arguments.length === 2) {
-            // calculate field at the provided location
-            const loc = location._data;
+            } break;
+            case 2: {
+                // calculate field at the provided location
+                const loc = location._data;
 
-            var xp = loc[0];
-            var yp = loc[1];
-            var zp = loc[2];
+                var xp = loc[0];
+                var yp = loc[1];
+                var zp = loc[2];
 
-            var xt = 0;
-            var yt = 0;
-            var zt = 0;
+                var xt = 0;
+                var yt = 0;
+                var zt = 0;
 
-            // add up forces from charges
-            for (let i = 0; i < charges.length; i+= 4) {
-                let q = charges[i];
-                let cx = charges[i+1];
-                let cy = charges[i+2];
-                let cz = charges[i+3];
+                // add up forces from charges
+                for (let i = 0; i < charges.length; i+= 4) {
+                    let q = charges[i];
+                    let cx = charges[i+1];
+                    let cy = charges[i+2];
+                    let cz = charges[i+3];
 
-                let v = [xp-cx, yp-cy, zp-cz];
-                let len = math.norm(v);
-                let l2 = len*len;
+                    let v = [xp-cx, yp-cy, zp-cz];
+                    let len = math.norm(v);
+                    let l2 = len*len;
 
-                let c = math.coulomb.value*q/len/l2; //math.coulomb.value*
+                    let c = math.coulomb.value*q/len/l2; //math.coulomb.value*
 
-                xt += c * v[0];
-                yt += c * v[1];
-                zt += c * v[2];
-            }
+                    xt += c * v[0];
+                    yt += c * v[1];
+                    zt += c * v[2];
+                }
 
-            return [xt, yt, zt];
+                return [xt, yt, zt];
+            } break; // Keep 'break' just in case 'return' is removed
         }
     },
     eleforce(charges, j) { // charges = [q1, x1, y1, z1, q2, x2, y2, z2, etc.] force on jth charge
