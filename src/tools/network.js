@@ -246,22 +246,21 @@ export default function Network(position) {
 
         // if we have a highlighted connection and we're in the right layer
         if (highConn.length !== 0) {
-          if (highConn[2] === j) {
-            if (highConn[0] === i) {
+          switch (highConn[2]) {
+            case j: if (highConn[0] === i) {
               if (j === 0) {
                 ctx.strokeStyle = 'blue';
               } else {
                 ctx.strokeStyle = 'red';
               }
-            }
-          } else if (highConn[2] === j - 1) {
-            if (highConn[1] === i) {
+            } break;
+          case j - 1: if (highConn[1] === i) {
               if (j === 0) {
                 ctx.strokeStyle = 'blue';
               } else {
                 ctx.strokeStyle = 'red';
               }
-            }
+            } break;
           }
         } else {
           const dx = rtv.mouse.pos.x - p[0];
