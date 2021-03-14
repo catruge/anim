@@ -3167,31 +3167,40 @@ export function interpolate(a, b) {
 
     let interp = {};
     for (const key in a) {
-        if (key === "p") {
+        switch (key) {
+            case 'p': {
             // interpolate position
             let ap = a[key];
             let bp = b[key];
 
             interp[key] = {x: (1-rtv.t_ease) * ap.x + rtv.t_ease * bp.x,
                            y: (1-rtv.t_ease) * ap.y + rtv.t_ease * bp.y};
-        } else if (key === "w" || key === "h" || key === "r" || key === "a_s" || key === "a_e") {
+        } break;
+        case 'w':
+        case 'h':
+        case 'r':
+        case 'a_s':
+        case 'a_e': {
             // interpolate width, height, or rotation
             let aw = a[key];
             let bw = b[key];
             interp[key] = (1-rtv.t_ease) * aw + rtv.t_ease * bw;
-        } else if (key === "rxyz") {
+        } break;
+        case 'rxyz': {
             let ar = a[key];
             let br = b[key];
             interp[key] = [0, 0, 0];
             for (let i = 0; i < 3; i ++) {
                 interp[key][i] = (1-rtv.t_ease) * ar[i] + rtv.t_ease * br[i];
             }
-        } else if (key === "c") {
+        } break;
+        case 'c': {
             // interpolate colors
             let ac = a[key];
             let bc = b[key];
             interp[key] = interpolate_colors(ac, bc, constrain(rtv.t_ease));
-        } else if (key === "path") {
+        } break;
+        case 'path': {
             // interpolate paths
             let ap = a[key];
             let bp = b[key];
@@ -3204,14 +3213,15 @@ export function interpolate(a, b) {
             }
 
             interp[key] = ip;
-        } else if (key === "t") {
-            if (rtv.t_ease < .5) {
-                interp[key] = a[key];
-            } else {
+        } break;
+        case 't':
+            if (rtv.t_ease >= .5) {
                 interp[key] = b[key];
+                break;
             }
-        } else {
+        default:
             interp[key] = a[key];
+            break;
         }
     }
 
