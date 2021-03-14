@@ -130,14 +130,19 @@ export default function Circle(color, pos) {
     if (rtv.keys.ctrl) {
       const p = this.properties[rtv.frame];
       const step = Math.PI / 12;
-      if (key === 'u') {
-        p.a_s += step;
-      } else if (key === 'o') {
-        p.a_s -= step;
-      } else if (key === 'j') {
-        p.a_e -= step;
-      } else if (key === 'l') {
-        p.a_e += step;
+      switch (key) {
+        case 'u':
+          p.a_s += step;
+          break;
+        case 'o':
+          p.a_s -= step;
+          break;
+        case 'j':
+          p.a_e -= step;
+          break;
+        case 'l':
+          p.a_e += step;
+          break;
       }
     } else {
       this.properties[rtv.frame] = transform_props(key, this.properties[rtv.frame]);
