@@ -854,26 +854,12 @@ math.import({
             }
         }
     },
-    fielda(f, _n, _uv) { // plots an animated vector field f(x,y,z) using a grid, _n # vectors, _uv force unit length
-        let n = 10;
-        let uv = false;
+    fielda(f, n = 11, uv = false) { // plots an animated vector field f(x,y,z) using a grid, _n # vectors, _uv force unit length
+        const nL = n > 1 ? n - 1 : 1;
+        const d = 20 / nL;
 
         let mod = .2;
         let flo = (rtv.t/500)%mod;
-
-        if (arguments.length >= 3) {
-            n = _n-1;
-
-            if (n <= 0) {
-                n = 1;
-            }
-        }
-
-        if (arguments.length >= 4 && _uv === true) {
-            uv = true;
-        }
-
-        let d = 20 / n;
 
         rtv.ctx.save();
         rtv.ctx.globalAlpha = math.sin(flo/mod * math.PI);
