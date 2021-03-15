@@ -836,23 +836,9 @@ math.import({
 
         return sigp(x);
     },
-    field(f, _n, _uv) { // plots a vector field f(x,y,z) using a grid, _n # vectors, _uv force unit length
-        let n = 10;
-        let uv = false;
-
-        if (arguments.length >= 2) {
-            n = _n-1;
-
-            if (n <= 0) {
-                n = 1;
-            }
-        }
-
-        if (arguments.length >= 3 && _uv === true) {
-            uv = true;
-        }
-
-        let d = 20 / n;
+    field(f, n = 11, uv = false) { // plots a vector field f(x,y,z) using a grid, _n # vectors, _uv force unit length
+        const nL = n > 1 ? n - 1 : 1;
+        const d = 20 / nL;
 
         for (let x = -10; x <= 10; x+=d) {
             for (let y = -10; y <= 10; y+=d) {
