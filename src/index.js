@@ -2298,18 +2298,7 @@ math.import({
         rtv.ctx.stroke();
         return math.matrix([x, y]);
     },
-    diffEq(a, b, c, x0, y0, yp0, _n, _dt) { // ay'' + by' + cy = 0 numerically plotted for _n steps and _dt accuracy
-        let n = 1000;
-        let dt = .001;
-
-        if (arguments.length >= 7) {
-            n = _n;
-        }
-
-        if (arguments.length >= 8) {
-            dt = _dt;
-        }
-
+    diffEq(a, b, c, x0, y0, yp0, n = 1000, dt = 0.001) { // ay'' + by' + cy = 0 numerically plotted for _n steps and _dt accuracy
         let y = y0;
         let x = x0;
         let yp = yp0;
