@@ -916,15 +916,9 @@ math.import({
         }
         rtv.ctx.restore();
     },
-    paras(r, _urs, _ure, _vrs, _vre, _n=1, f) { // parametric surface r(u,v) with optional field f
-        let n = 10;
-
+    paras(r, _urs, _ure, _vrs, _vre, n = 1, f) { // parametric surface r(u,v) with optional field f
         if ((_ure-_urs) <= 0 || (_vre-_vrs) <= 0 || n <= 0) {
             return;
-        }
-
-        if (arguments.length >= 6) {
-            n = _n;
         }
 
         let du = (_ure-_urs)/n;
