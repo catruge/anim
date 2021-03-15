@@ -1546,25 +1546,14 @@ math.import({
 
         return math.matrix(path);
     },
-    say(text, _voice, _rate, _pitch) { // text to speech
-        let voice = 11;
+    say(text, voice = 11, rate = 1, pitch = 0.8) { // text to speech
+        const utterThis = new SpeechSynthesisUtterance(text);
+        Object.assign(utterThis, {
+            voice: rtv.speech.voices[voice],
+            rate,
+            pitch,
+        });
 
-        if (_voice) {
-            voice = _voice;
-        }
-
-        var utterThis = new SpeechSynthesisUtterance(text);
-        utterThis.pitch = .8;
-
-        if (arguments.length >= 3) {
-            utterThis.rate = _rate;
-        }
-
-        if (arguments.length >= 4) {
-            utterThis.pitch = _pitch;
-        }
-
-        utterThis.voice = rtv.speech.voices[voice];
         rtv.speech.synth.cancel();
         rtv.speech.synth.speak(utterThis);
     },
