@@ -567,21 +567,16 @@ math.import({
     T(m) { // transpose m
         return math.transpose(m);
     },
-    scatter(points, point_size, color_fn) { // points [[x1, y1, z1], ...], psize, color([x,y,z])=[r,g,b] 0 <= r <= 1
+    scatter(points, psize = 8, color_fn) { // points [[x1, y1, z1], ...], psize, color([x,y,z])=[r,g,b] 0 <= r <= 1
         let size = points.size();
         let n = size[0];
         let points_d = points._data;
-
-        let psize = 8;
-        if (arguments.length >= 2) {
-            psize = arguments[1];
-        }
         let psize_half = psize/2;
 
         let cam_data = rtv.cam.graph_to_screen_mat(points);
 
         rtv.ctx.save();
-        if (arguments.length === 3) {
+        if (color_fn !== undefined) {
             // gradation
 
             var indices = new Array(n);
