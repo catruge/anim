@@ -2328,18 +2328,7 @@ math.import({
         }
         rtv.ctx.stroke();
     },
-    diffEqF(a, b, c, f, x0, y0, yp0, _n, _dt) { // ay'' + by' + cy = f(x) numerically plotted for _n steps and _dt accuracy
-        let n = 1000;
-        let dt = .001;
-
-        if (arguments.length >= 8) {
-            n = _n;
-        }
-
-        if (arguments.length >= 9) {
-            dt = _dt;
-        }
-
+    diffEqF(a, b, c, f, x0, y0, yp0, n = 1000, dt = 0.001) { // ay'' + by' + cy = f(x) numerically plotted for _n steps and _dt accuracy
         let y = y0;
         let x = x0;
         let yp = yp0;
