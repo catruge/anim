@@ -2431,23 +2431,7 @@ math.import({
 
         return math.matrix(primes); // Create and return matrix from 'primes'
     },
-    laplace(f, _ti, _tf, _dt) {
-        let ti = 0;
-        let tf = 1000;
-        let dt = .01;
-
-        if (arguments.length >= 2) {
-            ti = _ti;
-        }
-
-        if (arguments.length >= 3) {
-            tf = _tf;
-        }
-
-        if (arguments.length >= 4) {
-            _dt = dt;
-        }
-
+    laplace(f, ti = 0, tf = 1000, dt = 0.01) {
         return (s) => {
             let sum = 0;
             for (rtv.t = ti; rtv.t <= tf; rtv.t += dt) {
