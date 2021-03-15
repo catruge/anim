@@ -1493,12 +1493,7 @@ math.import({
         }
 
     },
-    circle(_p, r, _n) {
-        let n = 10;
-        if (arguments.length >= 3) {
-            n = _n;
-        }
-
+    circle(_p, r, n = 10) {
         let path = [];
         for (let i = 0; i <= n; i++) {
             let t = i/n * 2 * math.PI;
