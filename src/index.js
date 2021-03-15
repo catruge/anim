@@ -974,12 +974,7 @@ math.import({
 
         return sum;
     },
-    der(f, _h) { // return derivative approximation function _h = dx default .001
-        let h = .001;
-        if (arguments.length >= 2) {
-            h = _h;
-        }
-
+    der(f, h = 0.001) { // return derivative approximation function _h = dx default .001
         return function g(a) {
             return (f(a+h)-f(a))/h;
         }
