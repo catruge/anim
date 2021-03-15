@@ -694,12 +694,7 @@ math.import({
 
         math.draw(m);
     },
-    oval(_p, hr, vr, _n) {
-        let n = 10;
-        if (arguments.length >= 4) {
-            n = _n;
-        }
-
+    oval(_p, hr, vr, n = 10) {
         let path = [];
         for (let i = 0; i <= n; i++) {
             let t = i/n * 2 * math.PI;
