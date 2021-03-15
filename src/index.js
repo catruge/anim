@@ -949,7 +949,7 @@ math.import({
 
         rtv.ctx.restore();
     },
-    integral(f, a, b, _n) {
+    integral(f, a, b, n = 10000) {
         if (a === b) {
             return 0;
         }
@@ -960,11 +960,6 @@ math.import({
             b = a
             a = rtv.t
             negate = true;
-        }
-
-        let n = 10000;
-        if (arguments.length >= 4) {
-            n = _n;
         }
 
         let dx = (b-a)/n;
