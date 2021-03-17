@@ -58,7 +58,7 @@ function cached(dims) {
 // import
 function graph(fn, d1, d2, d3) { // graphs y=f(x) from -10 to 10
   let y = 0;
-  let p; let gp;
+  let p;
   const N = 400;
   let points = cached([N + 1, 3]);
   const asyms = cached([N + 1, 1])._data;
@@ -383,7 +383,6 @@ math.import({
   },
   fifo(matrix, value) {
     const matrixL = matrix._data.slice();
-    const first = matrixL[0];
     const N = matrixL.length;
     for (let i = 0; i < N - 1; i++) {
       matrixL[i] = matrixL[i + 1];
@@ -654,7 +653,7 @@ math.import({
 
     rtv.ctx.save();
     rtv.ctx.beginPath();
-    let p; let lastp;
+    let p;
     for (let i = 0; i < N; i++) {
       p = pointsL[i];
       if (i === 0) {
@@ -662,8 +661,6 @@ math.import({
       } else {
         rtv.ctx.lineTo(p[0], p[1]);
       }
-
-      lastp = p;
     }
     rtv.ctx.stroke();
     if (fill) {
@@ -1311,7 +1308,7 @@ math.import({
     rtv.ctx.font = FONT.ANIM;
 
     rtv.ctx.translate(loc[0] + 10, loc[1] + 330);
-    drawMatrix(rformat, (i, j) => {
+    drawMatrix(rformat, (i) => {
       rtv.ctx.fillStyle = 'black';
       for (let n = 0; n < highNeur.length; n++) {
         const highn = highNeur[n];
@@ -1337,7 +1334,7 @@ math.import({
 
     // draw x matrix
     rtv.ctx.translate(Wsize[0] + pad * 3, rsize[1] / 2 - xsize[1] / 2);
-    drawMatrix(xformat, (i, j) => {
+    drawMatrix(xformat, (i) => {
       rtv.ctx.fillStyle = 'black';
 
       for (let n = 0; n < highNeur.length; n++) {
@@ -1377,7 +1374,7 @@ math.import({
     rtv.ctx.font = FONT.ANIM;
 
     rtv.ctx.translate(loc[0] + 10, loc[1] + 330);
-    drawMatrix(rformat, (i, j) => {
+    drawMatrix(rformat, (i) => {
       rtv.ctx.fillStyle = 'black';
       for (let n = 0; n < highNeur.length; n++) {
         const highn = highNeur[n];
@@ -2979,8 +2976,6 @@ export function formatMatrix(matrix) {
 
 function getMousePos(canvas, evt) {
   const rect = canvas.getBoundingClientRect();
-  let x; let
-    y;
 
   if (evt.touches) {
     for (let i = 0; i < evt.touches.length; i++) {
@@ -3255,7 +3250,7 @@ function strToState(str) {
   rtv.objs = textArrayToObjs(arr, true);
 }
 
-function save(objs) {
+function save() {
   const str = stateToString();
   const blob = new Blob([str], { type: 'text/plain;charset=utf-8' });
   const name = document.getElementById('name').value;
@@ -3718,7 +3713,6 @@ window.addEventListener('load', () => {
     const paste = (event.clipboardData || window.clipboardData).getData('text');
     console.log(`pasting: ${paste}`);
 
-    const N = rtv.objs.length;
     for (let i = 0; i < rtv.objs.length; i++) {
       const obj = rtv.objs[i];
       if (obj.type === 'Text') {
