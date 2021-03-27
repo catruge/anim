@@ -4143,17 +4143,11 @@ window.addEventListener('load', () => {
 
   saveState();
 
-  rtv.millis = Date.now();
-  let targMillis = rtv.millis + 1; // set below
+  // https://stackoverflow.com/questions/19764018/controlling-fps-with-requestanimationframe
+  let then = Date.now();
 
   function animate() {
-    rtv.millis = Date.now();
-    if (rtv.millis < targMillis) {
-      setTimeout(animate, targMillis - rtv.millis);
-      return;
-    }
-
-    targMillis = rtv.millis + 1000 / rtv.fps;
+    requestAnimationFrame(animate);
 
     if (rtv.presenting) {
       rtv.fps = 60;
@@ -4161,118 +4155,124 @@ window.addEventListener('load', () => {
       rtv.fps = 30; // save power when editing
     }
 
-    parser.set('_frame', rtv.t);
-    parser.set('_millis', rtv.millis);
-    const mp = rtv.cam.screen_to_graph({ x: rtv.mouse.pos.x, y: rtv.mouse.pos.y });
-    parser.set('_mx', mp.x);
-    parser.set('_my', mp.y);
+    const frameInterval = 1000 / rtv.fps;
+    const now = Date.now();
+    const elapsed = now - then;
 
-    if (rtv.meter) {
-      parser.set('_vol', rtv.meter.volume);
-    }
+    if (elapsed > frameInterval) {
+      then = now - (elapsed % frameInterval);
 
-    if (rtv.presenting) {
-      rtv.mouse.time -= 1;
-    }
+      parser.set('_frame', rtv.t);
+      parser.set('_millis', now);
+      const mp = rtv.cam.screen_to_graph({ x: rtv.mouse.pos.x, y: rtv.mouse.pos.y });
+      parser.set('_mx', mp.x);
+      parser.set('_my', mp.y);
 
-    if (!parser.get('_trace')) {
-      rtv.ctx.clearRect(0, 0, rtv.c.width, rtv.c.height);
-    }
-
-    rtv.cam.update_props();
-
-    drawAxes(rtv.ctx);
-
-    rtv.ctx.font = FONT.ANIM;
-
-    const N = rtv.objs.length;
-    for (let i = 0; i < N; i++) {
-      const obj = rtv.objs[i];
-      if (typeof obj.eval === 'function') {
-        obj.eval();
+      if (rtv.meter) {
+        parser.set('_vol', rtv.meter.volume);
       }
-    }
 
-    for (let i = 0; i < N; i++) {
-      const obj = rtv.objs[i];
-      obj.render(rtv.ctx);
-    }
-
-    for (let i = rtv.objs.length - 1; i >= 0; i--) {
-      const obj = rtv.objs[i];
-      if (obj.deleted) {
-        rtv.objs.splice(i, 1);
+      if (rtv.presenting) {
+        rtv.mouse.time -= 1;
       }
-    }
 
-    if (rtv.selecting) {
-      // draw a rect
-      rtv.ctx.strokeStyle = DARK;
-      rtv.ctx.strokeRect(
-        rtv.mouse.start.x,
-        rtv.mouse.start.y,
-        rtv.mouse.pos.x - rtv.mouse.start.x,
-        rtv.mouse.pos.y - rtv.mouse.start.y,
-      );
-    }
-
-    rtv.ctx.font = FONT.MENU;
-
-    if (!rtv.presenting) {
-      rtv.frames.render(rtv.ctx);
-      rtv.menu.render(rtv.ctx);
-
-      if (rtv.error.timer > 0) {
-        rtv.ctx.save();
-        rtv.ctx.fillStyle = 'red';
-        rtv.ctx.fillText(rtv.error.text, 250, 30);
-        rtv.ctx.restore();
-        rtv.error.timer -= 1;
+      if (!parser.get('_trace')) {
+        rtv.ctx.clearRect(0, 0, rtv.c.width, rtv.c.height);
       }
-    }
 
-    rtv.pen.render();
+      rtv.cam.update_props();
 
-    drawCursor();
+      drawAxes(rtv.ctx);
 
-    if (rtv.view_frame) {
-      rtv.ctx.save();
-      rtv.ctx.strokeStyle = 'black';
-      rtv.ctx.beginPath();
-      const w = 1928; // +8 pixels for padding
-      const h = 1088;
-      rtv.ctx.rect(rtv.c.clientWidth - w / 2, rtv.c.clientHeight - h / 2, w, h);
-      rtv.ctx.stroke();
+      rtv.ctx.font = FONT.ANIM;
+
+      const N = rtv.objs.length;
+      for (let i = 0; i < N; i++) {
+        const obj = rtv.objs[i];
+        if (typeof obj.eval === 'function') {
+          obj.eval();
+        }
+      }
+
+      for (let i = 0; i < N; i++) {
+        const obj = rtv.objs[i];
+        obj.render(rtv.ctx);
+      }
+
+      for (let i = rtv.objs.length - 1; i >= 0; i--) {
+        const obj = rtv.objs[i];
+        if (obj.deleted) {
+          rtv.objs.splice(i, 1);
+        }
+      }
+
+      if (rtv.selecting) {
+        // draw a rect
+        rtv.ctx.strokeStyle = DARK;
+        rtv.ctx.strokeRect(
+          rtv.mouse.start.x,
+          rtv.mouse.start.y,
+          rtv.mouse.pos.x - rtv.mouse.start.x,
+          rtv.mouse.pos.y - rtv.mouse.start.y,
+        );
+      }
+
+      rtv.ctx.font = FONT.MENU;
 
       if (!rtv.presenting) {
-        rtv.ctx.globalAlpha = 0.1;
+        rtv.frames.render(rtv.ctx);
+        rtv.menu.render(rtv.ctx);
 
-        rtv.ctx.beginPath();
-        rtv.ctx.moveTo(rtv.c.clientWidth - w / 2, rtv.c.clientHeight);
-        rtv.ctx.lineTo(rtv.c.clientWidth + w / 2, rtv.c.clientHeight);
-        rtv.ctx.stroke();
-
-        rtv.ctx.beginPath();
-        rtv.ctx.moveTo(rtv.c.clientWidth, rtv.c.clientHeight - h / 2);
-        rtv.ctx.lineTo(rtv.c.clientWidth, rtv.c.clientHeight + h / 2);
-        rtv.ctx.stroke();
-
-        rtv.ctx.globalAlpha = 1;
+        if (rtv.error.timer > 0) {
+          rtv.ctx.save();
+          rtv.ctx.fillStyle = 'red';
+          rtv.ctx.fillText(rtv.error.text, 250, 30);
+          rtv.ctx.restore();
+          rtv.error.timer -= 1;
+        }
       }
 
-      rtv.ctx.restore();
+      rtv.pen.render();
+
+      drawCursor();
+
+      if (rtv.view_frame) {
+        rtv.ctx.save();
+        rtv.ctx.strokeStyle = 'black';
+        rtv.ctx.beginPath();
+        const w = 1928; // +8 pixels for padding
+        const h = 1088;
+        rtv.ctx.rect(rtv.c.clientWidth - w / 2, rtv.c.clientHeight - h / 2, w, h);
+        rtv.ctx.stroke();
+
+        if (!rtv.presenting) {
+          rtv.ctx.globalAlpha = 0.1;
+
+          rtv.ctx.beginPath();
+          rtv.ctx.moveTo(rtv.c.clientWidth - w / 2, rtv.c.clientHeight);
+          rtv.ctx.lineTo(rtv.c.clientWidth + w / 2, rtv.c.clientHeight);
+          rtv.ctx.stroke();
+
+          rtv.ctx.beginPath();
+          rtv.ctx.moveTo(rtv.c.clientWidth, rtv.c.clientHeight - h / 2);
+          rtv.ctx.lineTo(rtv.c.clientWidth, rtv.c.clientHeight + h / 2);
+          rtv.ctx.stroke();
+
+          rtv.ctx.globalAlpha = 1;
+        }
+
+        rtv.ctx.restore();
+      }
+
+      rtv.transition.update();
+
+      rtv.t += 1;
+
+      // Draw background only if recording to speed up 'animate'
+      if (rtv.recordingManager.recording !== undefined) {
+        drawBackground(rtv.ctx, CANVAS_BG);
+      }
     }
-
-    rtv.transition.update();
-
-    rtv.t += 1;
-
-    // Draw background only if recording to speed up 'animate'
-    if (rtv.recordingManager.recording !== undefined) {
-      drawBackground(rtv.ctx, CANVAS_BG);
-    }
-
-    requestAnimationFrame(animate);
   }
 
   requestAnimationFrame(animate);
