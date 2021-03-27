@@ -1419,7 +1419,7 @@ window.requestAnimationFrame
 
 math.import({
   anon(params, body) {
-    return math.evaluate(`f(${params}) = ${body}`, parser.scope);
+    return math.evaluate(`f(${params}) = ${body}`, { ...parser.scope });
   },
   logicTable() {
     const O = [true, false];
