@@ -1418,6 +1418,9 @@ window.requestAnimationFrame
     ?? ((f) => setTimeout(f, 1000 / rtv.fps)); // simulate calling code 60
 
 math.import({
+  anon(params, body) {
+    return math.evaluate(`f(${params}) = ${body}`);
+  },
   logicTable() {
     const O = [true, false];
 
