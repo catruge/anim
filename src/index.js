@@ -1731,10 +1731,8 @@ math.import({
       rtv.ctx.stroke();
     }
   },
-  randn() { // no args: random normal, 1 arg shape: dims of matrix to return
-    const N = arguments.length;
-    if (N === 1) {
-      const shape = arguments[0];
+  randn(shape) { // no args: random normal, 1 arg shape: dims of matrix to return
+    if (shape !== undefined) {
       let m = cached(shape._data);
       m = m.map(randNBm);
 
