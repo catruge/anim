@@ -2463,24 +2463,22 @@ math.import({
 
     // add up forces from charges
     for (let i = 0; i < charges.length; i += 4) {
-      if (i === j * 4) {
-        continue;
+      if (i !== j * 4) {
+        const q = charges[i];
+        const cx = charges[i + 1];
+        const cy = charges[i + 2];
+        const cz = charges[i + 3];
+
+        const v = [xp - cx, yp - cy, zp - cz];
+        const len = math.norm(v);
+        const l2 = len * len;
+
+        const c = math.coulomb.value * q * oc / len / l2; // math.coulomb.value*
+
+        fx += c * v[0];
+        fy += c * v[1];
+        fz += c * v[2];
       }
-
-      const q = charges[i];
-      const cx = charges[i + 1];
-      const cy = charges[i + 2];
-      const cz = charges[i + 3];
-
-      const v = [xp - cx, yp - cy, zp - cz];
-      const len = math.norm(v);
-      const l2 = len * len;
-
-      const c = math.coulomb.value * q * oc / len / l2; // math.coulomb.value*
-
-      fx += c * v[0];
-      fy += c * v[1];
-      fz += c * v[2];
     }
 
     return [fx, fy, fz];
