@@ -1207,14 +1207,12 @@ function drawAxes(ctx) {
       axis = rtv.cam.graph_to_screen_mat(axis);
       const N = axis.length;
       for (let j = 0; j < N; j += 2) {
-        if (j === 20 || j === 62) {
-          continue;
+        if (j !== 20 && j !== 62) {
+          ctx.beginPath();
+          ctx.moveTo(axis[j][0], axis[j][1]);
+          ctx.lineTo(axis[j + 1][0], axis[j + 1][1]);
+          ctx.stroke();
         }
-
-        ctx.beginPath();
-        ctx.moveTo(axis[j][0], axis[j][1]);
-        ctx.lineTo(axis[j + 1][0], axis[j + 1][1]);
-        ctx.stroke();
       }
     } else {
       const w = rtv.c.clientWidth * 2;
