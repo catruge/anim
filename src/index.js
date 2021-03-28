@@ -3414,13 +3414,12 @@ math.import({
     for (let x = -10; x <= 10; x += 2) {
       for (let y = -10; y <= 10; y += 2) {
         const dydx = f(x + 0.0001, y + 0.0001); // to avoid asymptotes at x=0 or y=0
-        if (dydx.im) {
-          continue;
+        if (!dydx.im) {
+          let uv = [1, dydx];
+          uv = math.matrix(uv);
+          uv = math.multiply(uv, 1 / math.norm(uv));
+          drawVect(x, y, 0, x + uv._data[0], y + uv._data[1], 0);
         }
-        let uv = [1, dydx];
-        uv = math.matrix(uv);
-        uv = math.multiply(uv, 1 / math.norm(uv));
-        drawVect(x, y, 0, x + uv._data[0], y + uv._data[1], 0);
       }
     }
   },
