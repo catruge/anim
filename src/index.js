@@ -1786,7 +1786,7 @@ math.import({
 
       indices
         .map((i) => camData[i][2])
-        .sort((a, b) => (a < b ? 1 : (a > b ? -1 : 1)));
+        .sort((a, b) => (a <= b ? 1 : -1));
 
       let col;
       for (let j = 0; j < n; j++) {
