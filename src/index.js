@@ -207,8 +207,8 @@ function reportError(e) {
 // undo
 let states = [];
 
-export function formatRgb(c) {
-  return `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
+export function formatRgb([r, g, b]) {
+  return `rgb(${r}, ${g}, ${b})`;
 }
 
 function rgb1ToHex(a) {
