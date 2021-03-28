@@ -11,6 +11,7 @@ module.exports = {
   rules: {
     'consistent-return': 'warn',
     'import/no-cycle': 'warn',
+    'no-mixed-operators': 'warn',
     'no-plusplus': 'off',
     'no-underscore-dangle': 'off',
     'no-unused-vars': 'warn',
