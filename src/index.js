@@ -101,10 +101,7 @@ function graph(fn, d1, d2, d3) { // graphs y=f(x) from -10 to 10
       rtv.ctx.stroke();
       rtv.ctx.beginPath();
       rtv.ctx.moveTo(p[0], p[1]);
-      continue;
-    }
-
-    if (i === 0) {
+    } else if (i === 0) {
       rtv.ctx.moveTo(p[0], p[1]);
     } else {
       rtv.ctx.lineTo(p[0], p[1]);
