@@ -2630,42 +2630,41 @@ math.import({
 
     rtv.ctx.restore();
   },
+  magFieldAt(x, y, z, { _data: path }, current) { // Magnetic field at point
+    let b = math.zeros(3);
+    const c = current * math.magneticConstant.value / 4.0 / math.PI; // u0 I / 4 / pi
+
+    for (let i = 0; i < path.length - 1; i += 1) {
+      const p1 = path[i];
+      const p2 = path[i + 1];
+
+      let r = math.subtract([x, y, z], p1);
+      const rnorm = math.norm(r);
+      r = math.multiply(r, 1 / rnorm);
+
+      const ds = math.subtract(p2, p1);
+      let db = math.cross(ds, r);
+      db = math.multiply(db, 1 / math.pow(rnorm, 2));
+
+      b = math.add(b, db);
+    }
+
+    return math.multiply(b, c);
+  },
   // eslint-disable-next-line max-len
   magfield(path, current, { _data: atPoint }) { // mag field from path [[x1, y1, z1], [x2, y2, z2], ...]
     const n = 5;
     const d = 20 / n;
 
-    function magFieldAt(x, y, z, { _data: path }, current) {
-      let b = math.zeros(3);
-      const c = current * math.magneticConstant.value / 4.0 / math.PI; // u0 I / 4 / pi
-
-      for (let i = 0; i < path.length - 1; i += 1) {
-        const p1 = path[i];
-        const p2 = path[i + 1];
-
-        let r = math.subtract([x, y, z], p1);
-        const rnorm = math.norm(r);
-        r = math.multiply(r, 1 / rnorm);
-
-        const ds = math.subtract(p2, p1);
-        let db = math.cross(ds, r);
-        db = math.multiply(db, 1 / math.pow(rnorm, 2));
-
-        b = math.add(b, db);
-      }
-
-      return math.multiply(b, c);
-    }
-
     if (arguments.length >= 3) {
-      const b = magFieldAt(atPoint[0], atPoint[1], atPoint[2], path, current);
+      const b = math.magFieldAt(atPoint[0], atPoint[1], atPoint[2], path, current);
 
       return b;
     }
     for (let x = -10; x <= 10; x += d) {
       for (let y = -10; y <= 10; y += d) {
         for (let z = -10; z <= 10; z += d) {
-          let b = magFieldAt(x, y, z, path, current);
+          let b = math.magFieldAt(x, y, z, path, current);
 
           if (math.norm(b) > 0.1) {
             b = b._data;
