@@ -1105,10 +1105,9 @@ export function insertFrame() {
     for (let i = 0; i < rtv.objs.length; i++) {
       const obj = rtv.objs[i];
       if (typeof obj.copy_properties === 'function') {
-        if (!obj.properties[f]) {
-          continue;
+        if (obj.properties[f]) {
+          obj.copy_properties(f, f + 1);
         }
-        obj.copy_properties(f, f + 1);
       }
     }
 
