@@ -1,10 +1,4 @@
-import {
-  enterSelect,
-  hexToRgb,
-  loadLocal,
-  present,
-  saveLocal,
-} from '../index';
+import * as utils from '../utils';
 import Button from './button';
 import {
   rtv,
@@ -18,7 +12,7 @@ export default function Menu(pos) {
   this.buttons = [];
 
   this.buttons.push(new Button('select', { x: 0, y: 0 }, (() => {
-    enterSelect();
+    utils.enterSelect();
   })));
 
   this.buttons.push(new Button('text', { x: 0, y: 0 }, (() => {
@@ -172,16 +166,16 @@ export default function Menu(pos) {
 
   this.buttons.push(new Button('present', { x: 0, y: 0 }, (() => {
     // show a cursor
-    present();
+    utils.present();
   })));
 
   this.buttons.push(new Button('save local', { x: 0, y: 0 }, (() => {
     // Put the object into storage
-    saveLocal();
+    utils.saveLocal();
   })));
 
   this.buttons.push(new Button('load local', { x: 0, y: 0 }, (() => {
-    loadLocal();
+    utils.loadLocal();
   })));
 
   this.buttons.push(new Button(`ver: ${VERSION}`, { x: 0, y: 0 }, (() => {
@@ -190,7 +184,7 @@ export default function Menu(pos) {
 
   for (let i = 0; i < COLORS.length; i++) {
     const b = new Button('', { x: 0, y: 0 }, (() => {
-      const rgb = hexToRgb(COLORS[i]);
+      const rgb = utils.hexToRgb(COLORS[i]);
 
       rtv.pen.set_color(rgb);
 

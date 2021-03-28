@@ -1,9 +1,4 @@
-import {
-  copy,
-  interpolate,
-  rotationMatrix,
-  transformProps,
-} from '../index';
+import * as utils from '../utils';
 import { math, rtv, GRID_SIZE } from '../resources';
 
 export default function Camera() {
@@ -11,7 +6,7 @@ export default function Camera() {
     p: { x: rtv.c.width / 2, y: rtv.c.height / 2 }, w: 1, h: 1, rxyz: [0, 0, 0], style: '3d',
   };
   this.properties = {};
-  this.properties[rtv.frame] = copy(this.default_props);
+  this.properties[rtv.frame] = utils.copy(this.default_props);
   this.dragging_rotate = false;
 
   function generateTicks() {
@@ -138,7 +133,7 @@ export default function Camera() {
       return;
     }
 
-    this.properties[rtv.frame] = transformProps(evt, this.properties[rtv.frame], 0.01);
+    this.properties[rtv.frame] = utils.transformProps(evt, this.properties[rtv.frame], 0.01);
   };
 
   this.update_props = () => {
@@ -146,19 +141,19 @@ export default function Camera() {
     const b = this.properties[rtv.next_frame];
 
     if (!a) {
-      this.properties[rtv.frame] = copy(this.default_props);
+      this.properties[rtv.frame] = utils.copy(this.default_props);
       this.props = this.properties[rtv.frame];
       return;
     }
 
     if (a && !b) {
-      this.properties[rtv.next_frame] = copy(a);
+      this.properties[rtv.next_frame] = utils.copy(a);
       this.props = a;
       return;
     }
 
     if (rtv.transition.transitioning) {
-      this.props = interpolate(a, b);
+      this.props = utils.interpolate(a, b);
     } else {
       this.props = a;
     }
@@ -171,7 +166,7 @@ export default function Camera() {
     const ry = this.props.rxyz[1];
     const rz = this.props.rxyz[2];
 
-    this.R = rotationMatrix(rx, ry, rz);
+    this.R = utils.rotationMatrix(rx, ry, rz);
   };
 
   // takes array [x, y, z]

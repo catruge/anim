@@ -9,38 +9,7 @@ import RecordingManager from './graphics/recording-manager';
 import Text from './tools/text';
 import Transition from './graphics/transition';
 import initVolumeMeter from './audio/volume-meter';
-import {
-  cached,
-  constrain,
-  constrainToGrid,
-  copy,
-  drawAxes,
-  drawBackground,
-  drawCursor,
-  drawVect,
-  drawMatrix,
-  enterSelect,
-  formatMatrix,
-  getMousePos,
-  graph,
-  implies,
-  load,
-  matrixSize,
-  para,
-  present,
-  prettyRound,
-  prettyRoundOne,
-  randNBm,
-  rgbToHex,
-  rotationMatrix,
-  save,
-  saveState,
-  sig,
-  sigp,
-  textArrayToObjs,
-  transitionWithNext,
-  undo,
-} from './utils';
+import * as utils from './utils';
 import {
   rtv,
   math,
@@ -67,7 +36,7 @@ math.import({
 
     for (let k = 0; k < arguments.length; k++) {
       rtv.ctx.save();
-      const s = copy(arguments[k]);
+      const s = utils.copy(arguments[k]);
 
       const props = parser.evaluate('text_props');
       const x = props.p.x;
@@ -107,7 +76,7 @@ math.import({
     }
   },
   implies(p, q) { // LOGIC: Returns whether p => q is a true statement. Only false when p=T and q=F
-    return implies(p, q);
+    return utils.implies(p, q);
   },
   beval(statement) { // LOGIC: Boolean evaluation, "true^false||true"
     return eval(statement
@@ -123,7 +92,7 @@ math.import({
       for (let j = 0; j < 2; j++) {
         const q = O[j];
 
-        const s = copy(statement);
+        const s = utils.copy(statement);
         s.replace('P', p);
         s.replace('Q', q);
 
@@ -144,7 +113,7 @@ math.import({
       for (let j = 0; j < 2; j++) {
         const q = O[j];
 
-        const s = copy(statement);
+        const s = utils.copy(statement);
         s.replace('P', p);
         s.replace('Q', q);
 
@@ -270,7 +239,7 @@ math.import({
   surface(fn) {
     const d = 21; const d2 = d / 2;
     const dims = [d * d, 3];
-    const m = cached(dims);
+    const m = utils.cached(dims);
     let md = m._data;
 
     let xin = 0; let zin = 0; let yout = 0;
@@ -325,7 +294,7 @@ math.import({
   surfacez(fn) {
     const d = 21; const d2 = d / 2;
     const dims = [d * d, 3];
-    const m = cached(dims);
+    const m = utils.cached(dims);
     let md = m._data;
 
     let a = 0; let b = 0;
@@ -380,12 +349,12 @@ math.import({
     const N = arguments.length;
     if (N === 1) {
       const shape = arguments[0];
-      let m = cached(shape._data);
-      m = m.map(randNBm);
+      let m = utils.cached(shape._data);
+      m = m.map(utils.randNBm);
 
       return m;
     }
-    return randNBm();
+    return utils.randNBm();
   },
   axes(x, y, z) { // replace default camera axis names
     rtv.cam.axes_names = [x, y, z];
@@ -393,13 +362,13 @@ math.import({
   block() { // exectutes each argument
   },
   rotation(rx, ry, rz) { // creates a 3x3 rotation matrix
-    return math.matrix(rotationMatrix(rx, ry, rz));
+    return math.matrix(utils.rotationMatrix(rx, ry, rz));
   },
   grid(rangex, rangey = rangex) { // returns matrix x*y by 2
     const xd = rangex._data;
     const yd = rangey._data;
     const xN = xd.length; const yN = yd.length;
-    const m = cached([xN * yN, 2]);
+    const m = utils.cached([xN * yN, 2]);
 
     let idx = 0;
 
@@ -458,8 +427,8 @@ math.import({
 
         // constrain
         col = colorFn(p)._data;
-        col = [constrain(col[0]), constrain(col[1]), constrain(col[2])];
-        rtv.ctx.fillStyle = rgbToHex(math.multiply(col, 255));
+        col = [utils.constrain(col[0]), utils.constrain(col[1]), utils.constrain(col[2])];
+        rtv.ctx.fillStyle = utils.rgbToHex(math.multiply(col, 255));
         rtv.ctx.fillRect(camData[i][0] - psizeHalf, camData[i][1] - psizeHalf, psize, psize);
       }
     } else {
@@ -484,8 +453,8 @@ math.import({
     rtv.ctx.save();
     rtv.ctx.beginPath();
     if (color) {
-      const constrained = color.map(constrain);
-      rtv.ctx.fillStyle = rgbToHex(math.multiply(constrained, 255).toArray());
+      const constrained = color.map(utils.constrain);
+      rtv.ctx.fillStyle = utils.rgbToHex(math.multiply(constrained, 255).toArray());
     }
     rtv.ctx.arc(camData[0], camData[1], psize, 0, PI2);
     rtv.ctx.fill();
@@ -493,23 +462,23 @@ math.import({
     rtv.ctx.restore();
   },
   graph(fn) { // graphs y=f(x)
-    graph(fn, 0, 1, 2);
+    utils.graph(fn, 0, 1, 2);
   },
   // eslint-disable-next-line max-len
   paral(r, tmin, tmax, units) { // parametric line, graphs r(t)=[f(t), g(t), h(t)] from t=tmin to tmax
-    para(r, tmin, tmax, units);
+    utils.para(r, tmin, tmax, units);
   },
   graphxy(fn) { // graphs y=f(x)
-    graph(fn, 0, 1, 2);
+    utils.graph(fn, 0, 1, 2);
   },
   graphyx(fn) { // graphs x=f(y)
-    graph(fn, 1, 0, 2);
+    utils.graph(fn, 1, 0, 2);
   },
   graphxz(fn) {
-    graph(fn, 0, 2, 1);
+    utils.graph(fn, 0, 2, 1);
   },
   graphyz(fn) {
-    graph(fn, 1, 2, 0);
+    utils.graph(fn, 1, 2, 0);
   },
   draw(points, fill) { // draws line from point to point [[x1,y1,z1], ...], draws arrow
     const N = points.size()[0];
@@ -530,8 +499,8 @@ math.import({
     }
     rtv.ctx.stroke();
     if (fill) {
-      const col = fill._data.map(constrain);
-      rtv.ctx.fillStyle = rgbToHex(math.multiply(col, 255));
+      const col = fill._data.map(utils.constrain);
+      rtv.ctx.fillStyle = utils.rgbToHex(math.multiply(col, 255));
       rtv.ctx.globalAlpha = 0.8;
       rtv.ctx.fill();
     }
@@ -539,7 +508,7 @@ math.import({
   },
   drawxy(xs, ys) {
     const N = xs.size()[0];
-    const m = cached([N, 3]);
+    const m = utils.cached([N, 3]);
     for (let i = 0; i < N; i++) {
       m._data[i][0] = xs._data[i];
       m._data[i][1] = ys._data[i];
@@ -607,7 +576,7 @@ math.import({
       }
     }
 
-    drawVect(_x, _y, _z, x, y, z);
+    utils.drawVect(_x, _y, _z, x, y, z);
   },
   if(fnCondition, fnA, fnB) { // if fn_condition() == true then fn_a() else fn_b()
     if (fnCondition()) {
@@ -624,7 +593,7 @@ math.import({
     // get return size
     const dims = [N, v.length];
 
-    const m = cached(dims);
+    const m = utils.cached(dims);
     const md = m._data;
 
     for (let i = 0; i < N; i++) {
@@ -646,7 +615,7 @@ math.import({
   view(x, { _data: p } = { _data: [0, 0] }) { // matrix, position: [x, y, z]
     let t = [];
     if (x._data) {
-      const d = x.map(prettyRound)._data;
+      const d = x.map(utils.prettyRound)._data;
       if (x._size.length === 1) {
         t = [d.join(' ')];
       } else {
@@ -676,19 +645,19 @@ math.import({
   },
   sig(x) { // sigmoid(x)
     if (x._data) {
-      const b = x.map(sig);
+      const b = x.map(utils.sig);
       return b;
     }
 
-    return sig(x);
+    return utils.sig(x);
   },
   sigp(x) { // sigmoid_prime(x)
     if (x._data) {
-      const b = x.map(sigp);
+      const b = x.map(utils.sigp);
       return b;
     }
 
-    return sigp(x);
+    return utils.sigp(x);
   },
   // eslint-disable-next-line max-len
   field(f, _n, _uv) { // plots a vector field f(x,y,z) using a grid, _n # vectors, _uv force unit length
@@ -718,7 +687,7 @@ math.import({
             v = [v[0] / n, v[1] / n, v[2] / n];
           }
 
-          drawVect(x, y, z, x + v[0], y + v[1], z + v[2]);
+          utils.drawVect(x, y, z, x + v[0], y + v[1], z + v[2]);
         }
       }
     }
@@ -831,7 +800,7 @@ math.import({
           const p = r(u, v)._data;
 
           const vect = f(p[0], p[1], p[2])._data;
-          drawVect(p[0], p[1], p[2], p[0] + vect[0], p[1] + vect[1], p[2] + vect[2]);
+          utils.drawVect(p[0], p[1], p[2], p[0] + vect[0], p[1] + vect[1], p[2] + vect[2]);
         }
       }
     }
@@ -1067,7 +1036,7 @@ math.import({
 
               if (dead === false) {
                 p = rtv.cam.graph_to_screen(xp, yp, zp);
-                rtv.ctx.strokeStyle = rgbToHex([
+                rtv.ctx.strokeStyle = utils.rgbToHex([
                   math.round((pl - j) / pl * 255),
                   0,
                   math.round(j / pl * 255),
@@ -1155,13 +1124,13 @@ math.import({
 
     const result = math.multiply(W, x);
 
-    const xformat = formatMatrix(x._data);
-    const rformat = formatMatrix(result._data);
-    const Wformat = formatMatrix(W._data);
+    const xformat = utils.formatMatrix(x._data);
+    const rformat = utils.formatMatrix(result._data);
+    const Wformat = utils.formatMatrix(W._data);
 
-    const rsize = matrixSize(rformat);
-    const Wsize = matrixSize(formatMatrix(W._data));
-    const xsize = matrixSize(xformat);
+    const rsize = utils.matrixSize(rformat);
+    const Wsize = utils.matrixSize(utils.formatMatrix(W._data));
+    const xsize = utils.matrixSize(xformat);
 
     // draw neural network
     const rows = W._size[0];
@@ -1179,7 +1148,7 @@ math.import({
     rtv.ctx.font = FONT.ANIM;
 
     rtv.ctx.translate(loc[0] + 10, loc[1] + 330);
-    drawMatrix(rformat, (i, j) => {
+    utils.drawMatrix(rformat, (i, j) => {
       rtv.ctx.fillStyle = 'black';
       for (let n = 0; n < highNeur.length; n++) {
         const highn = highNeur[n];
@@ -1194,7 +1163,7 @@ math.import({
 
     // draw W matrix
     rtv.ctx.translate(rsize[0] + pad * 3, 0);
-    drawMatrix(Wformat, (i, j) => {
+    utils.drawMatrix(Wformat, (i, j) => {
       rtv.ctx.fillStyle = 'black';
       if (highConn.length && highConn[0] === j && highConn[1] === i) {
         rtv.ctx.fillStyle = COLORS[3];
@@ -1205,7 +1174,7 @@ math.import({
 
     // draw x matrix
     rtv.ctx.translate(Wsize[0] + pad * 3, rsize[1] / 2 - xsize[1] / 2);
-    drawMatrix(xformat, (i, j) => {
+    utils.drawMatrix(xformat, (i, j) => {
       rtv.ctx.fillStyle = 'black';
 
       for (let n = 0; n < highNeur.length; n++) {
@@ -1226,8 +1195,8 @@ math.import({
 
     const result = math.multiply(W, x);
 
-    const rformat = formatMatrix(result._data);
-    const rsize = matrixSize(rformat);
+    const rformat = utils.formatMatrix(result._data);
+    const rsize = utils.matrixSize(rformat);
 
     // draw neural network
     const rows = W._size[0];
@@ -1245,7 +1214,7 @@ math.import({
     rtv.ctx.font = FONT.ANIM;
 
     rtv.ctx.translate(loc[0] + 10, loc[1] + 330);
-    drawMatrix(rformat, (i, j) => {
+    utils.drawMatrix(rformat, (i, j) => {
       rtv.ctx.fillStyle = 'black';
       for (let n = 0; n < highNeur.length; n++) {
         const highn = highNeur[n];
@@ -1262,9 +1231,9 @@ math.import({
     rtv.ctx.translate(rsize[0] + pad * 3, 0);
     const dp = [];
 
-    let round = prettyRoundOne;
+    let round = utils.prettyRoundOne;
     if (rtv.keys.ctrl) {
-      round = prettyRound;
+      round = utils.prettyRound;
     }
 
     for (let i = 0; i < W._data.length; i++) {
@@ -1321,7 +1290,7 @@ math.import({
 
           if (math.norm(b) > 0.1) {
             b = b._data;
-            drawVect(x, y, z, x + b[0], y + b[1], z + b[2]);
+            utils.drawVect(x, y, z, x + b[0], y + b[1], z + b[2]);
           }
         }
       }
@@ -1346,7 +1315,7 @@ math.import({
     const ad = a._data;
     const bd = b._data;
 
-    const L = cached([divisions, ad.length]);
+    const L = utils.cached([divisions, ad.length]);
 
     for (let i = 0; i < divisions; i++) {
       const t = i / (divisions - 1);
@@ -2085,7 +2054,7 @@ math.import({
         let uv = [1, dydx];
         uv = math.matrix(uv);
         uv = math.multiply(uv, 1 / math.norm(uv));
-        drawVect(x, y, 0, x + uv._data[0], y + uv._data[1], 0);
+        utils.drawVect(x, y, 0, x + uv._data[0], y + uv._data[1], 0);
       }
     }
   },
@@ -2316,17 +2285,17 @@ window.addEventListener('load', () => {
     rtv.speech.voices = window.speechSynthesis.getVoices();
   });
 
-  document.getElementById('save').addEventListener('click', () => save(rtv.objs));
+  document.getElementById('save').addEventListener('click', () => utils.save(rtv.objs));
 
   document.getElementById('file').addEventListener('change', (evt) => {
-    enterSelect();
-    load(evt);
+    utils.enterSelect();
+    utils.load(evt);
   });
 
   document.getElementById('load_to_frame').addEventListener('click', () => {
     const text = document.getElementById('selected_objects_text').value;
     const arr = JSON.parse(text);
-    rtv.objs = rtv.objs.concat(textArrayToObjs(arr, false));
+    rtv.objs = rtv.objs.concat(utils.textArrayToObjs(arr, false));
   });
 
   rtv.formula_text = document.getElementById('formula_text');
@@ -2375,7 +2344,7 @@ window.addEventListener('load', () => {
       const s = script[i];
       const fr = i + 1;
       if (!t.properties[fr]) {
-        t.properties[fr] = copy(t.properties[fr - 1]);
+        t.properties[fr] = utils.copy(t.properties[fr - 1]);
       }
 
       t.properties[fr].t = s;
@@ -2384,7 +2353,7 @@ window.addEventListener('load', () => {
     rtv.num_frames = script.length;
     rtv.frames.create_buttons();
 
-    saveState();
+    utils.saveState();
   });
 
   rtv.recordingManager = new RecordingManager(
@@ -2415,7 +2384,7 @@ window.addEventListener('load', () => {
     x: rtv.c.width - GRID_SIZE * 2,
     y: GRID_SIZE / 4,
   }));
-  rtv.frames.on_click = transitionWithNext;
+  rtv.frames.on_click = utils.transitionWithNext;
 
   rtv.menu = new Menu({ x: GRID_SIZE / 4, y: GRID_SIZE / 2 });
   rtv.cam = new Camera();
@@ -2437,7 +2406,7 @@ window.addEventListener('load', () => {
     }
 
     if (key === 'Escape') {
-      enterSelect();
+      utils.enterSelect();
     }
 
     if (key === 'Tab') {
@@ -2469,12 +2438,12 @@ window.addEventListener('load', () => {
     }
 
     if (key === 'z' && (rtv.keys.meta || rtv.keys.ctrl)) {
-      undo();
+      utils.undo();
       return;
     }
 
     if ((rtv.keys.meta || rtv.keys.ctrl) && key === 'Enter') {
-      present();
+      utils.present();
       return true;
     }
 
@@ -2541,12 +2510,12 @@ window.addEventListener('load', () => {
       rtv.keys.ctrl = false;
     }
 
-    saveState();
+    utils.saveState();
   });
 
   ['mousedown', 'touchstart'].forEach((key) => rtv.c.addEventListener(key, (evt) => {
     rtv.mouse.down = true;
-    rtv.mouse.start = getMousePos(rtv.c, evt);
+    rtv.mouse.start = utils.getMousePos(rtv.c, evt);
 
     try {
       math.compile('click()').evaluate(parser.scope);
@@ -2601,8 +2570,8 @@ window.addEventListener('load', () => {
 
   ['mousemove', 'touchmove'].forEach((key) => window.addEventListener(key, (evt) => {
     // update mouse
-    rtv.mouse.pos = getMousePos(rtv.c, evt);
-    rtv.mouse.grid = constrainToGrid(rtv.mouse.pos);
+    rtv.mouse.pos = utils.getMousePos(rtv.c, evt);
+    rtv.mouse.grid = utils.constrainToGrid(rtv.mouse.pos);
     rtv.mouse.graph = rtv.cam.screen_to_graph(rtv.mouse.pos);
 
     parser.set('_y', rtv.mouse.graph.x);
@@ -2639,8 +2608,8 @@ window.addEventListener('load', () => {
       rtv.mouse.time = MOUSE_DURATION;
     }
 
-    rtv.mouse.last = getMousePos(rtv.c, evt);
-    rtv.mouse.gridLast = constrainToGrid(rtv.mouse.pos);
+    rtv.mouse.last = utils.getMousePos(rtv.c, evt);
+    rtv.mouse.gridLast = utils.constrainToGrid(rtv.mouse.pos);
   }));
 
   ['mouseup', 'touchend'].forEach((key) => rtv.c.addEventListener(key, (evt) => {
@@ -2668,12 +2637,12 @@ window.addEventListener('load', () => {
       rtv.new_line = null;
       rtv.selecting = false;
 
-      saveState();
+      utils.saveState();
       return;
     }
 
     if (rtv.pen.mouse_up(evt)) {
-      saveState();
+      utils.saveState();
       return;
     }
 
@@ -2752,10 +2721,10 @@ window.addEventListener('load', () => {
         }
       }
 
-      const scopy = copy(rtv.selected_objs);
+      const scopy = utils.copy(rtv.selected_objs);
       for (let i = 0; i < scopy.length; i++) {
         const obj = scopy[i];
-        const props = copy(obj.properties[rtv.frame]);
+        const props = utils.copy(obj.properties[rtv.frame]);
         obj.properties = { 1: props };
       }
 
@@ -2765,14 +2734,14 @@ window.addEventListener('load', () => {
         document.getElementById('selected_objects_text').value = string;
       }
 
-      saveState();
+      utils.saveState();
       return false;
     }
 
-    saveState();
+    utils.saveState();
   }));
 
-  saveState();
+  utils.saveState();
 
   rtv.millis = Date.now();
   let targMillis = rtv.millis + 1; // set below
@@ -2812,7 +2781,7 @@ window.addEventListener('load', () => {
 
     rtv.cam.update_props();
 
-    drawAxes(rtv.ctx);
+    utils.drawAxes(rtv.ctx);
 
     rtv.ctx.font = FONT.ANIM;
 
@@ -2864,7 +2833,7 @@ window.addEventListener('load', () => {
 
     rtv.pen.render();
 
-    drawCursor();
+    utils.drawCursor();
 
     if (rtv.view_frame) {
       rtv.ctx.save();
@@ -2900,7 +2869,7 @@ window.addEventListener('load', () => {
 
     // Draw background only if recording to speed up 'animate'
     if (rtv.recordingManager.recording !== undefined) {
-      drawBackground(rtv.ctx, CANVAS_BG);
+      utils.drawBackground(rtv.ctx, CANVAS_BG);
     }
 
     requestAnimationFrame(animate);

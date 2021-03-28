@@ -1,10 +1,4 @@
-import {
-  copy,
-  distance,
-  interpolate,
-  rgbToHex,
-  transformProps,
-} from '../index';
+import * as utils from '../utils';
 import {
   math,
   rtv,
@@ -35,7 +29,7 @@ export default function Circle(color, pos) {
   };
 
   this.copy_properties = (f, n) => {
-    this.properties[n] = copy(this.properties[f]);
+    this.properties[n] = utils.copy(this.properties[f]);
   };
 
   this.duplicate = () => {
@@ -44,7 +38,7 @@ export default function Circle(color, pos) {
     }
 
     const newc = new Circle(null, null);
-    newc.properties[rtv.frame] = copy(this.properties[rtv.frame]);
+    newc.properties[rtv.frame] = utils.copy(this.properties[rtv.frame]);
     newc.selected = true;
     this.selected = false;
     rtv.objs.push(newc);
@@ -99,7 +93,7 @@ export default function Circle(color, pos) {
       return false;
     }
 
-    return distance(props.p, rtv.mouse.pos) < GRID_SIZE / 2;
+    return utils.distance(props.p, rtv.mouse.pos) < GRID_SIZE / 2;
   };
 
   this.in_rect = (x, y, x2, y2) => {
@@ -138,7 +132,7 @@ export default function Circle(color, pos) {
         p.a_e += step;
       }
     } else {
-      this.properties[rtv.frame] = transformProps(evt, this.properties[rtv.frame]);
+      this.properties[rtv.frame] = utils.transformProps(evt, this.properties[rtv.frame]);
     }
 
     return false;
@@ -201,7 +195,7 @@ export default function Circle(color, pos) {
     js += `ctx.scale(${props.w}, ${props.h});\n`;
     js += `ctx.arc(0, 0, 20, ${props.a_s}, ${props.a_e}, false);\n`;
     js += `ctx.globalAlpha = ${props.c[3]};\n`;
-    js += `ctx.strokeStyle = "${rgbToHex(props.c)}";\n`;
+    js += `ctx.strokeStyle = "${utils.rgbToHex(props.c)}";\n`;
     js += 'ctx.restore();\n';
     js += 'ctx.stroke();\n';
 
@@ -218,7 +212,7 @@ export default function Circle(color, pos) {
 
     let props;
     if (rtv.transition.transitioning) {
-      props = interpolate(a, b);
+      props = utils.interpolate(a, b);
     } else {
       props = a;
     }
@@ -228,12 +222,12 @@ export default function Circle(color, pos) {
 
     ctx.save();
 
-    ctx.fillStyle = rgbToHex(props.fill);
+    ctx.fillStyle = utils.rgbToHex(props.fill);
     ctx.globalAlpha = math.min(props.fill[3], props.c[3]);
     ctx.fill();
 
     ctx.globalAlpha = props.c[3];
-    ctx.strokeStyle = rgbToHex(props.c);
+    ctx.strokeStyle = utils.rgbToHex(props.c);
 
     ctx.stroke();
 

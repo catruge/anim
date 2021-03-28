@@ -1,8 +1,4 @@
-import {
-  copy,
-  distance,
-  interpolate,
-} from '../index';
+import * as utils from '../utils';
 import {
   math,
   rtv,
@@ -37,7 +33,7 @@ export default function Network(position) {
   };
 
   this.copy_properties = (f, n) => {
-    this.properties[n] = copy(this.properties[f]);
+    this.properties[n] = utils.copy(this.properties[f]);
   };
 
   this.duplicate = () => {
@@ -46,7 +42,7 @@ export default function Network(position) {
     }
 
     const newc = new Network(null);
-    newc.properties[rtv.frame] = copy(this.properties[rtv.frame]);
+    newc.properties[rtv.frame] = utils.copy(this.properties[rtv.frame]);
     newc.selected = true;
     this.selected = false;
     rtv.objs.push(newc);
@@ -99,7 +95,7 @@ export default function Network(position) {
       return false;
     }
 
-    return distance(props.p, rtv.mouse.pos) < GRID_SIZE / 2;
+    return utils.distance(props.p, rtv.mouse.pos) < GRID_SIZE / 2;
   };
 
   this.in_rect = (x, y, x2, y2) => {
@@ -296,7 +292,7 @@ export default function Network(position) {
 
     let props;
     if (rtv.transition.transitioning) {
-      props = interpolate(a, b);
+      props = utils.interpolate(a, b);
     } else {
       props = a;
     }

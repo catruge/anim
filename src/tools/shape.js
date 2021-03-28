@@ -1,11 +1,4 @@
-import {
-  between,
-  copy,
-  distance,
-  interpolate,
-  rgbToHex,
-  transformProps,
-} from '../index';
+import * as utils from '../utils';
 import {
   math,
   rtv,
@@ -28,7 +21,7 @@ export default function Shape(color, path) {
     }
 
     const newc = new Shape(null, null);
-    newc.properties[rtv.frame] = copy(this.properties[rtv.frame]);
+    newc.properties[rtv.frame] = utils.copy(this.properties[rtv.frame]);
     // select all indices for next one
     for (let i = 0; i < newc.properties[rtv.frame].path.length; i++) {
       newc.selected_indices.push(i);
@@ -47,7 +40,7 @@ export default function Shape(color, path) {
   };
 
   this.copy_properties = (f, n) => {
-    this.properties[n] = copy(this.properties[f]);
+    this.properties[n] = utils.copy(this.properties[f]);
   };
 
   this.hide = () => {
@@ -114,7 +107,7 @@ export default function Shape(color, path) {
     for (let i = 0; i < framePath.length; i++) {
       const p = framePath[i];
 
-      if (distance(p, rtv.mouse.pos) < GRID_SIZE / 8) {
+      if (utils.distance(p, rtv.mouse.pos) < GRID_SIZE / 8) {
         return i;
       }
     }
@@ -146,7 +139,7 @@ export default function Shape(color, path) {
 
   this.onkeydown = (evt) => {
     if (this.selected_indices.length !== 0) {
-      this.properties[rtv.frame] = transformProps(evt, this.properties[rtv.frame]);
+      this.properties[rtv.frame] = utils.transformProps(evt, this.properties[rtv.frame]);
     }
 
     return false;
@@ -256,8 +249,8 @@ export default function Shape(color, path) {
       for (let i = 0; i < framePath.length - 1; i++) {
         const p1 = framePath[i];
         const p2 = framePath[i + 1];
-        const b = between(p1, p2);
-        let d = distance(p1, p2) / GRID_SIZE;
+        const b = utils.between(p1, p2);
+        let d = utils.distance(p1, p2) / GRID_SIZE;
         d = Math.round(d * 10) / 10;
         rtv.ctx.fillText(d, b.x - c.x, b.y - c.y);
       }
@@ -300,7 +293,7 @@ export default function Shape(color, path) {
     let js = '';
     js += 'ctx.save();\n';
     js += `ctx.globalAlpha = ${props.c[3]};\n`;
-    js += `ctx.strokeStyle = "${rgbToHex(props.c)}";\n`;
+    js += `ctx.strokeStyle = "${utils.rgbToHex(props.c)}";\n`;
     js += `ctx.translate(x + ${c.x - cp.x}, y + ${c.y - cp.y});\n`;
     js += `ctx.rotate(${props.r});\n`;
     js += `ctx.scale(${props.w}, ${props.h});\n`;
@@ -332,7 +325,7 @@ export default function Shape(color, path) {
 
     let props;
     if (rtv.transition.transitioning) {
-      props = interpolate(a, b);
+      props = utils.interpolate(a, b);
     } else {
       props = a;
     }
@@ -340,7 +333,7 @@ export default function Shape(color, path) {
     ctx.save();
     ctx.beginPath();
     ctx.globalAlpha = props.c[3];
-    ctx.strokeStyle = rgbToHex(props.c);
+    ctx.strokeStyle = utils.rgbToHex(props.c);
     this.draw_path(props);
     ctx.stroke();
     ctx.restore();

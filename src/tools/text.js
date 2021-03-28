@@ -1,21 +1,4 @@
-import {
-  constrain,
-  copy,
-  distance,
-  drawBrackets,
-  drawFn,
-  drawMatrix,
-  drawNetwork,
-  drawSimple,
-  enterSelect,
-  formatMatrix,
-  interpolate,
-  matrixSize,
-  prettyRound,
-  rgbToHex,
-  saveState,
-  transformProps,
-} from '../index';
+import * as utils from '../utils';
 import {
   math,
   parser,
@@ -158,14 +141,14 @@ export default function Text(text, pos) {
     }
 
     const newc = new Text(this.text, null);
-    newc.properties[rtv.frame] = copy(this.properties[rtv.frame]);
+    newc.properties[rtv.frame] = utils.copy(this.properties[rtv.frame]);
     newc.selected = true;
     this.selected = false;
     rtv.objs.push(newc);
   };
 
   this.copy_properties = (f, n) => {
-    this.properties[n] = copy(this.properties[f]);
+    this.properties[n] = utils.copy(this.properties[f]);
   };
 
   this.set_color = (rgba) => {
@@ -265,7 +248,7 @@ export default function Text(text, pos) {
 
       const l = math.evaluate(t.substring(t.indexOf('['), t.indexOf(']') + 1));
 
-      drawNetwork(l._data, [p.x, p.y]);
+      utils.drawNetwork(l._data, [p.x, p.y]);
 
       // hide
       this.properties[rtv.frame].c[3] = 0;
@@ -286,7 +269,7 @@ export default function Text(text, pos) {
       // create a bunch of matrix numbers
       const pad = 24;
 
-      const matrix = formatMatrix(this.matrix_vals);
+      const matrix = utils.formatMatrix(this.matrix_vals);
 
       for (let i = 0; i < matrix.length; i++) {
         for (let j = 0; j < matrix[i].length; j++) {
@@ -298,8 +281,8 @@ export default function Text(text, pos) {
         }
       }
 
-      const size = matrixSize(matrix);
-      drawBrackets(0, 0, size[0], size[1]);
+      const size = utils.matrixSize(matrix);
+      utils.drawBrackets(0, 0, size[0], size[1]);
 
       return;
     }
@@ -366,7 +349,7 @@ export default function Text(text, pos) {
         }
       }
 
-      this.properties[rtv.frame] = transformProps(evt, this.properties[rtv.frame]);
+      this.properties[rtv.frame] = utils.transformProps(evt, this.properties[rtv.frame]);
 
       return true;
     }
@@ -412,9 +395,9 @@ export default function Text(text, pos) {
         const newT = new Text('', { x: p.x, y: p.y + CHAR.SIZE * 2 });
         rtv.objs.push(newT);
         newT.select();
-        saveState();
+        utils.saveState();
       } else {
-        enterSelect();
+        utils.enterSelect();
       }
 
       return false;
@@ -552,12 +535,12 @@ export default function Text(text, pos) {
 
     let i;
     if (rtv.transition.transitioning) {
-      i = interpolate(a, b);
+      i = utils.interpolate(a, b);
     } else {
       i = a;
     }
 
-    const color = rgbToHex(i.c);
+    const color = utils.rgbToHex(i.c);
 
     rtv.ctx.strokeStyle = color;
     rtv.ctx.fillStyle = color;
@@ -592,7 +575,7 @@ export default function Text(text, pos) {
               // nothing
               this.text_val = `=${val}`;
             } else {
-              this.text_val = `=${prettyRound(val)}`;
+              this.text_val = `=${utils.prettyRound(val)}`;
             }
           } else if (type === 'boolean') {
             this.text_val = ` = ${val}`;
@@ -606,9 +589,9 @@ export default function Text(text, pos) {
                 // nothing
                 this.text_val = `=${val}`;
               } else {
-                this.text_val = `=${prettyRound(
+                this.text_val = `=${utils.prettyRound(
                   val.re,
-                ).toString()} + ${prettyRound(val.im).toString()}i`;
+                ).toString()} + ${utils.prettyRound(val.im).toString()}i`;
               }
             }
           } else if (val) {
@@ -738,7 +721,7 @@ export default function Text(text, pos) {
         }
 
         const newVal = oldVal + delta;
-        this.text_val = `=${prettyRound(newVal)}`;
+        this.text_val = `=${utils.prettyRound(newVal)}`;
 
         try {
           parser.set(varName, newVal);
@@ -800,12 +783,12 @@ export default function Text(text, pos) {
 
     if (this.command === 'f' && !this.is_selected()) {
       const fn = t.slice(this.command.length + 1); // +1 for semicolon
-      size = drawFn(fn);
+      size = utils.drawFn(fn);
     } else {
       const N = t.length;
       size = { w: N * CHAR.SIZE, h: CHAR.SIZE * 2 };
 
-      size = { w: drawSimple(t), h: CHAR.SIZE * 2 };
+      size = { w: utils.drawSimple(t), h: CHAR.SIZE * 2 };
 
       let plevel = 0;
       for (let i = 0; i < N; i++) {
@@ -848,14 +831,14 @@ export default function Text(text, pos) {
       ctx.translate(135, 0);
 
       ctx.translate(-100, -20);
-      const formatted = formatMatrix(this.matrix_vals);
-      drawMatrix(formatted);
+      const formatted = utils.formatMatrix(this.matrix_vals);
+      utils.drawMatrix(formatted);
 
       ctx.restore();
     } else if (!this.selected && this.text_val && this.text_val.length) {
       ctx.save();
       ctx.translate(size.w, 0);
-      size.w += drawSimple(this.text_val);
+      size.w += utils.drawSimple(this.text_val);
       ctx.restore();
     }
 
@@ -957,7 +940,7 @@ export default function Text(text, pos) {
             t = o.op;
           }
 
-          if (distance(rtv.mouse.pos, np) < GRID_SIZE) {
+          if (utils.distance(rtv.mouse.pos, np) < GRID_SIZE) {
             t = o.toString();
           }
 
@@ -1046,7 +1029,7 @@ export default function Text(text, pos) {
     let b = this.properties[rtv.next_frame];
 
     const itn = rtv.transition.transitioning
-      ? interpolate(a, b)
+      ? utils.interpolate(a, b)
       : a;
 
     if (itn.c[3] === 0) {
@@ -1066,8 +1049,8 @@ export default function Text(text, pos) {
     ctx.save();
 
     ctx.globalAlpha = itn.c[3];
-    ctx.fillStyle = rgbToHex(itn.c);
-    ctx.strokeStyle = rgbToHex(itn.c);
+    ctx.fillStyle = utils.rgbToHex(itn.c);
+    ctx.strokeStyle = utils.rgbToHex(itn.c);
 
     let shouldDrawText = true;
 
@@ -1134,7 +1117,7 @@ export default function Text(text, pos) {
 
       if (textDifferent && rtv.transition.transitioning) {
         // changing text
-        const constrained = constrain(rtv.t_ease);
+        const constrained = utils.constrain(rtv.t_ease);
         ctx.globalAlpha = 1 - constrained;
         this.draw_text(ctx, a.t);
         ctx.globalAlpha = constrained;
@@ -1188,7 +1171,7 @@ export default function Text(text, pos) {
               ctx.translate(0, CHAR.SIZE * 2 + yoff);
               ctx.scale(0.5, 0.5);
               ctx.globalAlpha = 0.5;
-              drawSimple(`${funcName}: ${`${math[funcName]}`.split('\n')[0]}`);
+              utils.drawSimple(`${funcName}: ${`${math[funcName]}`.split('\n')[0]}`);
               ctx.restore();
               yoff += GRID_SIZE;
             }
@@ -1211,7 +1194,7 @@ export default function Text(text, pos) {
     js += `ctx.translate(x + ${p.x - cp.x}, y + ${p.y - cp.y});\n`;
     js += `ctx.rotate(${props.r});\n`;
     js += `ctx.scale(${props.w}, ${props.h});\n`;
-    js += `ctx.fillStyle = "${rgbToHex(props.c)}";\n`;
+    js += `ctx.fillStyle = "${utils.rgbToHex(props.c)}";\n`;
 
     for (let i = 0; i < t.length; i++) {
       if (t[i] === '*') {

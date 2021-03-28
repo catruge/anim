@@ -1,9 +1,4 @@
-import {
-  copy,
-  insertFrame,
-  loopFrame,
-  transitionWithNext,
-} from '../index';
+import * as utils from '../utils';
 import Button from '../ui/button';
 import {
   rtv,
@@ -90,7 +85,7 @@ export default function Frames(pos) {
             }
 
             if (rtv.cam.properties[f] && rtv.cam.properties[f + 1]) {
-              rtv.cam.properties[f] = copy(rtv.cam.properties[f + 1]);
+              rtv.cam.properties[f] = utils.copy(rtv.cam.properties[f + 1]);
             }
           }
 
@@ -100,7 +95,7 @@ export default function Frames(pos) {
         } if (i === this.buttons.length - 1) {
           // add frame
           // copy to next from frame
-          insertFrame();
+          utils.insertFrame();
           return;
         }
         this.on_click(i + 1);
@@ -114,19 +109,19 @@ export default function Frames(pos) {
     if (key === 'ArrowRight') {
       if (!rtv.presenting && rtv.frame + 1 > rtv.num_frames) {
         // create a new one
-        insertFrame();
+        utils.insertFrame();
       }
 
-      transitionWithNext(loopFrame(rtv.frame + 1));
+      utils.transitionWithNext(utils.loopFrame(rtv.frame + 1));
       return true;
     } if (key === 'ArrowLeft') {
-      transitionWithNext(loopFrame(rtv.frame - 1));
+      utils.transitionWithNext(utils.loopFrame(rtv.frame - 1));
       return true;
     }
 
     if ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(Number(key)) !== -1) {
       if (!rtv.transition.transitioning) {
-        transitionWithNext(Number(key));
+        utils.transitionWithNext(Number(key));
         return true;
       }
 
