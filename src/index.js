@@ -2628,9 +2628,20 @@ math.import({
 
     rtv.ctx.restore();
   },
+<<<<<<< HEAD
   magFieldAt(x, y, z, { _data: path }, current) { // Magnetic field at point
     let b = math.zeros(3);
     const c = current * math.magneticConstant.value / 4.0 / math.PI; // u0 I / 4 / pi
+=======
+  // eslint-disable-next-line max-len
+  magfield(path, current, { _data: atPoint } = {}) { // mag field from path [[x1, y1, z1], [x2, y2, z2], ...]
+    const n = 5;
+    const d = 20 / n;
+
+    function bAt(x, y, z, { _data: path }, current) {
+      let b = math.zeros(3);
+      const c = current * math.magneticConstant.value / 4.0 / math.PI; // u0 I / 4 / pi
+>>>>>>> resolve-eslint-errors
 
     for (let i = 0; i < path.length - 1; i += 1) {
       const p1 = path[i];
