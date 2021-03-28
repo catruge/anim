@@ -17,13 +17,9 @@ import {
   CANVAS_BG,
   COLORS,
   FONT,
-  SCALE_FACTOR,
-  T_STEPS,
   GRID_SIZE,
   MOUSE_DURATION,
   PI2,
-  MAT_NUM_WIDTH,
-  CHAR,
 } from './resources';
 
 // http://www.javascriptkit.com/javatutors/requestanimationframe.shtml

@@ -1,3 +1,23 @@
+import { saveAs } from 'file-saver';
+import Camera from '../graphics/camera';
+import Circle from '../tools/circle';
+import Pen from '../tools/pen';
+import Shape from '../tools/shape';
+import Text from '../tools/text';
+import {
+  rtv,
+  math,
+  parser,
+  DARK,
+  SCALE_FACTOR,
+  T_STEPS,
+  GRID_SIZE,
+  MOUSE_DURATION,
+  PI2,
+  MAT_NUM_WIDTH,
+  CHAR,
+} from '../resources';
+
 // custom functions!
 function sig(x) {
   return 1 / (1 + math.exp(-x));
