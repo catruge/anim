@@ -2364,7 +2364,7 @@ math.import({
     }
   },
   int(n) {
-    return n | 0;
+    return n | 0; // eslint-disable-line no-bitwise
   },
   // eslint-disable-next-line max-len
   elefield({ _data: charges }, location) { // charges = [q1, x1, y1, z1, q2, x2, y2, z2, etc.], provide location for field there
