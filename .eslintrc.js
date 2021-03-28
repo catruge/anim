@@ -12,6 +12,6 @@ module.exports = {
     'consistent-return': 'warn',
     'no-plusplus': 'off',
     'no-underscore-dangle': 'off',
-    'prefer-destructuring': 'off',
+    'prefer-destructuring': 'warn',
   },
 };
