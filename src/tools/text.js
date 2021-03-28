@@ -12,7 +12,7 @@ import {
   interpolate,
   matrixSize,
   prettyRound,
-  rgbToHex,
+  formatRgb,
   saveState,
   transformProps,
 } from '../index';
@@ -557,7 +557,7 @@ export default function Text(text, pos) {
       i = a;
     }
 
-    const color = rgbToHex(i.c);
+    const color = formatRgb(i.c);
 
     rtv.ctx.strokeStyle = color;
     rtv.ctx.fillStyle = color;
@@ -1066,8 +1066,8 @@ export default function Text(text, pos) {
     ctx.save();
 
     ctx.globalAlpha = itn.c[3];
-    ctx.fillStyle = rgbToHex(itn.c);
-    ctx.strokeStyle = rgbToHex(itn.c);
+    ctx.fillStyle = formatRgb(itn.c);
+    ctx.strokeStyle = formatRgb(itn.c);
 
     let shouldDrawText = true;
 
@@ -1211,7 +1211,7 @@ export default function Text(text, pos) {
     js += `ctx.translate(x + ${p.x - cp.x}, y + ${p.y - cp.y});\n`;
     js += `ctx.rotate(${props.r});\n`;
     js += `ctx.scale(${props.w}, ${props.h});\n`;
-    js += `ctx.fillStyle = "${rgbToHex(props.c)}";\n`;
+    js += `ctx.fillStyle = "${formatRgb(props.c)}";\n`;
 
     for (let i = 0; i < t.length; i++) {
       if (t[i] === '*') {
