@@ -461,7 +461,7 @@ function drawR(o, p, d) {
       // assignment
 
       const s1 = drawR(o.value, { x: 0, y: 0 }, false);
-      const text = `${o.object.name} = `;
+      text = `${o.object.name} = `;
 
       if (d) {
         rtv.ctx.save();
