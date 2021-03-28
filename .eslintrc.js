@@ -10,6 +10,7 @@ module.exports = {
   },
   rules: {
     'consistent-return': 'warn',
+    'import/no-cycle': 'warn',
     'no-plusplus': 'off',
     'no-underscore-dangle': 'off',
     'prefer-destructuring': 'warn',
