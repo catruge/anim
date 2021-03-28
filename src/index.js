@@ -2060,8 +2060,8 @@ math.import({
         for (let z = -10; z <= 10; z += d) {
           let v = f(x, y, z)._data;
           if (uv) {
-            const n = math.norm(v);
-            v = [v[0] / n, v[1] / n, v[2] / n];
+            const norm = math.norm(v);
+            v = [v[0] / norm, v[1] / norm, v[2] / norm];
           }
 
           drawVect(x, y, z, x + v[0], y + v[1], z + v[2]);
@@ -2099,8 +2099,8 @@ math.import({
         for (let z = -10; z <= 10; z += d) {
           let v = f(x, y, z)._data;
           if (uv) {
-            const n = math.norm(v);
-            v = [v[0] / n, v[1] / n, v[2] / n];
+            const norm = math.norm(v);
+            v = [v[0] / norm, v[1] / norm, v[2] / norm];
           }
 
           const a = rtv.cam.graph_to_screen(x + flo * v[0], y + flo * v[1], z + flo * v[2]);
