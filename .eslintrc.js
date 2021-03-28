@@ -9,6 +9,7 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
+    'consistent-return': 'warn',
     'no-plusplus': 'off',
     'no-underscore-dangle': 'off',
     'prefer-destructuring': 'off',
