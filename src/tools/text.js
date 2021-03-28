@@ -310,11 +310,11 @@ export default function Text(text, pos) {
       const c = t[i];
       if (c === ' ') {
         xoff += GRID_SIZE / 2;
-        continue;
+      } else {
+        const newT = new Text(c, { x: p.x + xoff, y: p.y });
+        rtv.objs.push(newT);
+        xoff += GRID_SIZE / 2;
       }
-      const newT = new Text(c, { x: p.x + xoff, y: p.y });
-      rtv.objs.push(newT);
-      xoff += GRID_SIZE / 2;
     }
 
     this.deleted = true;
