@@ -208,7 +208,7 @@ function reportError(e) {
 let states = [];
 
 export function rgbToHex(c) {
-  return `#${((1 << 24) + (Math.round(c[0]) << 16) + (Math.round(c[1]) << 8) + Math.round(c[2])).toString(16).slice(1)}`;
+  return `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
 }
 
 function rgb1ToHex(a) {
