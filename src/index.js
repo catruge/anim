@@ -1558,8 +1558,8 @@ math.import({
     rtv.ctx.fill();
     rtv.ctx.stroke();
 
-    const da = 2 * math.PI / math.max(spots, 1);
     for (let i = 0; i < spots; i++) {
+      const da = 2 * math.PI / math.max(spots, 1);
       const a = da * i;
       rtv.ctx.beginPath();
       rtv.ctx.arc(x + math.cos(a) * (20 + spots * 2) + 30,
