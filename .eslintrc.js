@@ -13,6 +13,7 @@ module.exports = {
     'import/no-cycle': 'warn',
     'no-plusplus': 'off',
     'no-underscore-dangle': 'off',
+    'no-unused-vars': 'warn',
     'prefer-destructuring': 'warn',
   },
 };
