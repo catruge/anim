@@ -19,17 +19,17 @@ import {
 } from '../resources';
 
 // custom functions!
-function sig(x) {
+export function sig(x) {
   return 1 / (1 + math.exp(-x));
 }
 
-function sigp(x) {
+export function sigp(x) {
   return math.exp(-x) / math.pow(1 + math.exp(-x), 2);
 }
 
 // http://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
 // Maxwell Collard
-function randNBm() {
+export function randNBm() {
   const u = 1 - Math.random(); // Subtraction to flip [0, 1) to (0, 1].
   const v = 1 - Math.random();
   return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
@@ -37,7 +37,7 @@ function randNBm() {
 
 // cache
 const matrixCache = {};
-function cached(dims) {
+export function cached(dims) {
   const s = dims.join('_');
   let m = matrixCache[s];
   if (!m) {
@@ -49,7 +49,7 @@ function cached(dims) {
 }
 
 // import
-function graph(fn, d1, d2, d3) { // graphs y=f(x) from -10 to 10
+export function graph(fn, d1, d2, d3) { // graphs y=f(x) from -10 to 10
   let y = 0;
   let p; let gp;
   const N = 400;
@@ -111,7 +111,7 @@ function graph(fn, d1, d2, d3) { // graphs y=f(x) from -10 to 10
  * @param {*} tmax
  * @param {*} units
  */
-function para(r, tmin, tmax, units) {
+export function para(r, tmin, tmax, units) {
   const N = 300;
   let points = cached([N + 1, 3]);
   const pd = points._data;
@@ -185,7 +185,7 @@ function para(r, tmin, tmax, units) {
   }
 }
 
-function implies(p, q) {
+export function implies(p, q) {
   return !p || q;
 }
 
@@ -213,7 +213,7 @@ export function prettyRound(num) {
   return (Math.round(num * 100) / 100).toFixed(2);
 }
 
-function prettyRoundOne(num) {
+export function prettyRoundOne(num) {
   return (Math.round(num * 10) / 10).toFixed(1);
 }
 
@@ -579,7 +579,7 @@ function drawR(o, p, d) {
   return size;
 }
 
-function drawVect(_x, _y, _z, x, y, z) {
+export function drawVect(_x, _y, _z, x, y, z) {
   let a = rtv.cam.graph_to_screen(_x, _y, _z);
   let b = rtv.cam.graph_to_screen(x, y, z);
 
@@ -773,7 +773,7 @@ export function formatMatrix(matrix) {
   return formatted;
 }
 
-function getMousePos(canvas, evt) {
+export function getMousePos(canvas, evt) {
   const rect = canvas.getBoundingClientRect();
   let x; let
     y;
@@ -795,7 +795,7 @@ function getMousePos(canvas, evt) {
   };
 }
 
-function constrainToGrid(p) {
+export function constrainToGrid(p) {
   const gs = GRID_SIZE / 4;
   return { x: Math.floor((p.x + gs / 2) / gs) * gs, y: Math.floor((p.y + gs / 2) / gs) * gs };
 }
@@ -984,7 +984,7 @@ export function interpolate(a, b) {
   return interp;
 }
 
-function textArrayToObjs(arr, keepAnimation) {
+export function textArrayToObjs(arr, keepAnimation) {
   const newObjs = [];
   for (let i = 0; i < arr.length; i++) {
     const o = arr[i];
@@ -1058,21 +1058,21 @@ export function saveState() {
   }
 }
 
-function undo() {
+export function undo() {
   if (states.length > 1) {
     states = states.splice(0, states.length - 1);
     strToState(states[states.length - 1]);
   }
 }
 
-function save(objs) {
+export function save(objs) {
   const str = stateToString();
   const blob = new Blob([str], { type: 'text/plain;charset=utf-8' });
   const name = document.getElementById('name').value;
   saveAs(blob, name);
 }
 
-function load(evt) {
+export function load(evt) {
   const files = evt.target.files; // FileList object
   const f = files[0];
 
@@ -1169,7 +1169,7 @@ export function loopFrame(f) {
   return f;
 }
 
-function drawAxes(ctx) {
+export function drawAxes(ctx) {
   if (!rtv.cam.R) {
     return;
   }
@@ -1346,7 +1346,7 @@ export function transitionWithNext(next) {
   });
 }
 
-function drawCursor() {
+export function drawCursor() {
   if (rtv.presenting && rtv.tool === 'pen') {
     const pad = 20;
 
@@ -1406,7 +1406,7 @@ function drawCursor() {
  * @param {CanvasRenderingContext2D} ctx Canvas context.
  * @param {string} color Background color.
  */
-function drawBackground(ctx, color) {
+export function drawBackground(ctx, color) {
   ctx.save(); // Save canvas state
   ctx.globalCompositeOperation = 'destination-over'; // Draw underneath existing content
   ctx.fillStyle = color; // Set fill style to requested background color
