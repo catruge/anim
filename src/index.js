@@ -94,7 +94,7 @@ function graph(fn, d1, d2, d3) { // graphs y=f(x) from -10 to 10
   points = rtv.cam.graph_to_screen_mat(points);
 
   rtv.ctx.beginPath();
-  for (let i = 0; i < N; i++) {
+  for (i = 0; i < N; i++) {
     p = points[i];
 
     if (asyms[i]) {
@@ -147,7 +147,7 @@ function para(r, tmin, tmax, units) {
   points = rtv.cam.graph_to_screen_mat(points);
 
   rtv.ctx.beginPath();
-  for (let i = 0; i < N; i++) {
+  for (i = 0; i < N; i++) {
     const p = points[i];
     if (i === 0) {
       rtv.ctx.moveTo(p[0], p[1]);
@@ -164,8 +164,6 @@ function para(r, tmin, tmax, units) {
     if (numDots > 0) {
       let dots = cached([numDots, 3]);
 
-      let i = 0;
-
       for (i = 0; i < numDots; i++) {
         data = r(i + 1)._data;
 
@@ -181,7 +179,7 @@ function para(r, tmin, tmax, units) {
       dots = rtv.cam.graph_to_screen_mat(dots);
 
       rtv.ctx.save();
-      for (let i = 0; i < numDots; i++) {
+      for (i = 0; i < numDots; i++) {
         const p = dots[i];
 
         rtv.ctx.beginPath();
@@ -463,7 +461,7 @@ function drawR(o, p, d) {
       // assignment
 
       const s1 = drawR(o.value, { x: 0, y: 0 }, false);
-      const text = `${o.object.name} = `;
+      text = `${o.object.name} = `;
 
       if (d) {
         rtv.ctx.save();
@@ -1560,8 +1558,8 @@ math.import({
     rtv.ctx.fill();
     rtv.ctx.stroke();
 
-    const da = 2 * math.PI / math.max(spots, 1);
     for (let i = 0; i < spots; i++) {
+      const da = 2 * math.PI / math.max(spots, 1);
       const a = da * i;
       rtv.ctx.beginPath();
       rtv.ctx.arc(x + math.cos(a) * (20 + spots * 2) + 30,
@@ -2062,8 +2060,8 @@ math.import({
         for (let z = -10; z <= 10; z += d) {
           let v = f(x, y, z)._data;
           if (uv) {
-            const n = math.norm(v);
-            v = [v[0] / n, v[1] / n, v[2] / n];
+            const norm = math.norm(v);
+            v = [v[0] / norm, v[1] / norm, v[2] / norm];
           }
 
           drawVect(x, y, z, x + v[0], y + v[1], z + v[2]);
@@ -2101,8 +2099,8 @@ math.import({
         for (let z = -10; z <= 10; z += d) {
           let v = f(x, y, z)._data;
           if (uv) {
-            const n = math.norm(v);
-            v = [v[0] / n, v[1] / n, v[2] / n];
+            const norm = math.norm(v);
+            v = [v[0] / norm, v[1] / norm, v[2] / norm];
           }
 
           const a = rtv.cam.graph_to_screen(x + flo * v[0], y + flo * v[1], z + flo * v[2]);
@@ -2630,42 +2628,41 @@ math.import({
 
     rtv.ctx.restore();
   },
+  magFieldAt(x, y, z, { _data: path }, current) { // Magnetic field at point
+    let b = math.zeros(3);
+    const c = current * math.magneticConstant.value / 4.0 / math.PI; // u0 I / 4 / pi
+
+    for (let i = 0; i < path.length - 1; i += 1) {
+      const p1 = path[i];
+      const p2 = path[i + 1];
+
+      let r = math.subtract([x, y, z], p1);
+      const rnorm = math.norm(r);
+      r = math.multiply(r, 1 / rnorm);
+
+      const ds = math.subtract(p2, p1);
+      let db = math.cross(ds, r);
+      db = math.multiply(db, 1 / math.pow(rnorm, 2));
+
+      b = math.add(b, db);
+    }
+
+    return math.multiply(b, c);
+  },
   // eslint-disable-next-line max-len
   magfield(path, current, { _data: atPoint } = {}) { // mag field from path [[x1, y1, z1], [x2, y2, z2], ...]
     const n = 5;
     const d = 20 / n;
 
-    function bAt(x, y, z, { _data: path }, current) {
-      let b = math.zeros(3);
-      const c = current * math.magneticConstant.value / 4.0 / math.PI; // u0 I / 4 / pi
-
-      for (let i = 0; i < path.length - 1; i += 1) {
-        const p1 = path[i];
-        const p2 = path[i + 1];
-
-        let r = math.subtract([x, y, z], p1);
-        const rnorm = math.norm(r);
-        r = math.multiply(r, 1 / rnorm);
-
-        const ds = math.subtract(p2, p1);
-        let db = math.cross(ds, r);
-        db = math.multiply(db, 1 / math.pow(rnorm, 2));
-
-        b = math.add(b, db);
-      }
-
-      return math.multiply(b, c);
-    }
-
     if (atPoint !== undefined) {
-      const b = bAt(atPoint[0], atPoint[1], atPoint[2], path, current);
+      const b = math.magFieldAt(atPoint[0], atPoint[1], atPoint[2], path, current);
 
       return b;
     }
     for (let x = -10; x <= 10; x += d) {
       for (let y = -10; y <= 10; y += d) {
         for (let z = -10; z <= 10; z += d) {
-          let b = bAt(x, y, z, path, current);
+          let b = math.magFieldAt(x, y, z, path, current);
 
           if (math.norm(b) > 0.1) {
             b = b._data;
