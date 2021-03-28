@@ -94,7 +94,7 @@ function graph(fn, d1, d2, d3) { // graphs y=f(x) from -10 to 10
   points = rtv.cam.graph_to_screen_mat(points);
 
   rtv.ctx.beginPath();
-  for (let i = 0; i < N; i++) {
+  for (i = 0; i < N; i++) {
     p = points[i];
 
     if (asyms[i]) {
@@ -147,7 +147,7 @@ function para(r, tmin, tmax, units) {
   points = rtv.cam.graph_to_screen_mat(points);
 
   rtv.ctx.beginPath();
-  for (let i = 0; i < N; i++) {
+  for (i = 0; i < N; i++) {
     const p = points[i];
     if (i === 0) {
       rtv.ctx.moveTo(p[0], p[1]);
@@ -164,8 +164,6 @@ function para(r, tmin, tmax, units) {
     if (numDots > 0) {
       let dots = cached([numDots, 3]);
 
-      let i = 0;
-
       for (i = 0; i < numDots; i++) {
         data = r(i + 1)._data;
 
@@ -181,7 +179,7 @@ function para(r, tmin, tmax, units) {
       dots = rtv.cam.graph_to_screen_mat(dots);
 
       rtv.ctx.save();
-      for (let i = 0; i < numDots; i++) {
+      for (i = 0; i < numDots; i++) {
         const p = dots[i];
 
         rtv.ctx.beginPath();
