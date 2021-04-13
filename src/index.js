@@ -134,9 +134,7 @@ function para(r, tmin, tmax, units) {
     data[1] = Math.max(Math.min(data[1], 1000), -1000);
     data[2] = Math.max(Math.min(data[2], 1000), -1000);
 
-    pd[i][0] = data[0];
-    pd[i][1] = data[1];
-    pd[i][2] = data[2];
+    pd[i] = data;
 
     i++;
   }
@@ -170,9 +168,7 @@ function para(r, tmin, tmax, units) {
         data[1] = Math.max(Math.min(data[1], 1000), -1000);
         data[2] = Math.max(Math.min(data[2], 1000), -1000);
 
-        dots._data[i][0] = data[0];
-        dots._data[i][1] = data[1];
-        dots._data[i][2] = data[2];
+        dots._data[i] = data;
       }
 
       dots = rtv.cam.graph_to_screen_mat(dots);
@@ -1643,8 +1639,7 @@ math.import({
       rtv.ctx.moveTo(xc, yc);
 
       for (let z = 0; z < d; z++) {
-        xc = md[i][0];
-        yc = md[i][1];
+        [xc, yc] = md[i];
 
         rtv.ctx.lineTo(xc, yc);
 
@@ -1654,13 +1649,11 @@ math.import({
       rtv.ctx.stroke();
 
       rtv.ctx.beginPath();
-      xc = md[x][0];
-      yc = md[x][1];
+      [xc, yc] = md[x];
       rtv.ctx.moveTo(xc, yc);
 
       for (let j = 0; j < dims[0]; j += d) {
-        xc = md[x + j][0];
-        yc = md[x + j][1];
+        [xc, yc] = md[x + j];
 
         rtv.ctx.lineTo(xc, yc);
       }
@@ -1697,8 +1690,7 @@ math.import({
       rtv.ctx.moveTo(xc, yc);
 
       for (let z = 0; z < d; z++) {
-        xc = md[i][0];
-        yc = md[i][1];
+        [xc, yc] = md[i];
 
         rtv.ctx.lineTo(xc, yc);
 
@@ -1708,13 +1700,11 @@ math.import({
       rtv.ctx.stroke();
 
       rtv.ctx.beginPath();
-      xc = md[x][0];
-      yc = md[x][1];
+      [xc, yc] = md[x];
       rtv.ctx.moveTo(xc, yc);
 
       for (let j = 0; j < dims[0]; j += d) {
-        xc = md[x + j][0];
-        yc = md[x + j][1];
+        [xc, yc] = md[x + j];
 
         rtv.ctx.lineTo(xc, yc);
       }
@@ -1924,22 +1914,19 @@ math.import({
     let z = 0;
 
     if (!bL) {
-      x = aL._data[0];
-      y = aL._data[1];
+      [x, y] = aL._data;
 
       if (aL.size()[0] === 3) {
         z = aL._data[2];
       }
     } else {
-      _x = aL._data[0];
-      _y = aL._data[1];
+      [_x, _y] = aL._data;
 
       if (aL.size()[0] === 3) {
         _z = aL._data[2];
       }
 
-      x = bL._data[0];
-      y = bL._data[1];
+      [x, y] = bL._data;
 
       if (bL.size()[0] === 3) {
         z = bL._data[2];
