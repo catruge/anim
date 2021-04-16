@@ -1,3 +1,4 @@
+import { string } from 'mathjs';
 import {
   constrain,
   copy,
@@ -614,8 +615,9 @@ export default function Text(text, pos) {
         }
       }
     } catch (e) {
-      const trimmedStack = e.stack.substring(0,
-        e.stack.search(/(at Text.eval \(|^Text\/this.eval@)/m));
+      const trimmedStack = e.stack instanceof string
+        ? e.stack.substring(0, e.stack.search(/(at Text.eval \(|^Text\/this.eval@)/m))
+        : undefined;
       const lastError = this.properties[rtv.frame].e;
 
       if (
@@ -625,7 +627,7 @@ export default function Text(text, pos) {
         || lastError.trimmedStack !== trimmedStack
       ) {
         console.error('eval error: ', e);
-        e.trimmedStack = trimmedStack;
+        if (e instanceof Object) e.trimmedStack = trimmedStack;
         this.properties[rtv.frame].e = e;
       }
     }
