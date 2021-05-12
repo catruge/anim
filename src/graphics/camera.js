@@ -133,14 +133,6 @@ export default function Camera() {
     }
   };
 
-  this.onkeydown = (evt) => {
-    if (rtv.tool !== 'camera') {
-      return;
-    }
-
-    this.properties[rtv.frame] = transformProps(evt, this.properties[rtv.frame], 0.01);
-  };
-
   this.update_props = () => {
     const a = this.properties[rtv.frame];
     const b = this.properties[rtv.next_frame];
@@ -218,4 +210,8 @@ export default function Camera() {
   });
 
   this.update_props();
+
+  window.addEventListener('keydown', (evt) => {
+    if (rtv.tool === 'camera') this.properties[rtv.frame] = transformProps(evt, this.properties[rtv.frame], 0.01);
+  });
 }

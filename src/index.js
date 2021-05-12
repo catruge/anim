@@ -3778,7 +3778,6 @@ window.addEventListener('load', () => {
       return false;
     }
 
-    rtv.cam.onkeydown(evt);
     rtv.pen.onkeydown(evt);
 
     if (key === ' ') {
