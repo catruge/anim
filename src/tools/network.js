@@ -316,4 +316,8 @@ export default function Network(position) {
       ctx.stroke();
     }
   };
+
+  window.addEventListener('keydown', ({ key }) => {
+    if (this.selected && rtv.keys.ctrl && key === 'Backspace') this.deleted = true;
+  });
 }

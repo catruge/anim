@@ -345,4 +345,8 @@ export default function Shape(color, path) {
     ctx.stroke();
     ctx.restore();
   };
+
+  window.addEventListener('keydown', ({ key }) => {
+    if (this.selected && rtv.keys.ctrl && key === 'Backspace') this.deleted = true;
+  });
 }

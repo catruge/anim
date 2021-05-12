@@ -1235,4 +1235,8 @@ export default function Text(text, pos) {
   };
 
   this.parse_text(text);
+
+  window.addEventListener('keydown', ({ key }) => {
+    if (this.selected && rtv.keys.ctrl && key === 'Backspace') this.deleted = true;
+  });
 }

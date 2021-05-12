@@ -3739,18 +3739,6 @@ window.addEventListener('load', () => {
       rtv.keys.ctrl = true;
     }
 
-    if (key === 'Backspace') {
-      if (rtv.keys.ctrl) {
-        const N = rtv.objs.length;
-        for (let i = 0; i < N; i++) {
-          const obj = rtv.objs[i];
-          if (obj.is_selected()) {
-            obj.deleted = true;
-          }
-        }
-      }
-    }
-
     if (key === 'z' && (rtv.keys.meta || rtv.keys.ctrl)) {
       undo();
       return;
