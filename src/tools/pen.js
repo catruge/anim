@@ -6,25 +6,6 @@ export default function Pen() {
   this.path = [];
   this.path_nearby_idx = -1;
 
-  this.onkeydown = (evt) => {
-    if (rtv.tool === 'pen' && evt.key === 'Esc') {
-      rtv.tool = 'select';
-    } else if (evt.key === 'p') {
-      if (rtv.tool === 'pen') {
-        this.clear_drawing();
-      }
-
-      rtv.tool = 'pen';
-    }
-
-    if (rtv.tool === 'pen' && evt.key === 'Backspace') {
-      // delete path nearby mouse
-      if (this.path_nearby_idx !== -1) {
-        this.drawings[rtv.frame].splice(this.path_nearby_idx, 1);
-      }
-    }
-  };
-
   this.mouse_down = () => {
     if (rtv.tool === 'pen') {
       this.path = [];
@@ -177,4 +158,22 @@ export default function Pen() {
 
     rtv.ctx.restore();
   };
+
+  window.addEventListener('keydown', ({ key }) => {
+    if (rtv.tool === 'pen') {
+      switch (key) {
+        case 'Esc':
+          rtv.tool = 'select';
+          break;
+        case 'Backspace':
+          // delete path nearby mouse
+          if (this.path_nearby_idx !== -1) this.drawings[rtv.frame].splice(this.path_nearby_idx, 1);
+          break;
+        case 'p':
+          this.clear_drawing();
+          break;
+        // no default
+      }
+    } else if (key === 'p') rtv.tool = 'pen';
+  });
 }

@@ -3778,8 +3778,6 @@ window.addEventListener('load', () => {
       return false;
     }
 
-    rtv.pen.onkeydown(evt);
-
     if (key === ' ') {
       return false;
     }
