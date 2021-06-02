@@ -118,7 +118,6 @@ export const rtv = {
   },
 
   t: 0, // time for parser
-  millis: 0,
 };
 
 export const math = create(all);

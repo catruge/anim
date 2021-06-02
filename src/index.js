@@ -4055,17 +4055,11 @@ window.addEventListener('load', () => {
 
   saveState();
 
-  rtv.millis = Date.now();
-  let targMillis = rtv.millis + 1; // set below
+  // Used from: https://stackoverflow.com/a/19772220
+  let then = Date.now();
 
   function animate() {
-    rtv.millis = Date.now();
-    if (rtv.millis < targMillis) {
-      setTimeout(animate, targMillis - rtv.millis);
-      return;
-    }
-
-    targMillis = rtv.millis + 1000 / rtv.fps;
+    requestAnimationFrame(animate);
 
     if (rtv.presenting) {
       rtv.fps = 60;
@@ -4073,8 +4067,16 @@ window.addEventListener('load', () => {
       rtv.fps = 30; // save power when editing
     }
 
+    const now = Date.now();
+    const elapsed = now - then;
+    const fpsInterval = rtv.fps / 1000;
+
+    if (elapsed < fpsInterval) return;
+
+    then = now - (elapsed % fpsInterval);
+
     parser.set('_frame', rtv.t);
-    parser.set('_millis', rtv.millis);
+    parser.set('_millis', now);
     const mp = rtv.cam.screen_to_graph({ x: rtv.mouse.pos.x, y: rtv.mouse.pos.y });
     parser.set('_mx', mp.x);
     parser.set('_my', mp.y);
@@ -4178,8 +4180,6 @@ window.addEventListener('load', () => {
     rtv.transition.update();
 
     rtv.t += 1;
-
-    requestAnimationFrame(animate);
   }
 
   requestAnimationFrame(animate);
